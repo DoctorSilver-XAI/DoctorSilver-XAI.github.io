@@ -22,6 +22,7 @@ export const en: Dict = {
 
   hero: {
     kicker: 'Thesis defense · July 2026 · ISPB Lyon',
+    by: 'A thesis presented by',
     title: 'Opening the black box.',
     subtitle:
       'Explainable, trustworthy AI for the diagnosis, personalised monitoring and therapeutic optimisation of ADHD and bipolar disorder: a translational framework for pharmacy practice.',
@@ -169,6 +170,7 @@ export const en: Dict = {
   footer: {
     ispb: 'Institute of Pharmaceutical and Biological Sciences (ISPB), Faculty of Pharmacy of Lyon, Université Claude Bernard Lyon 1.',
     address: '8 avenue Rockefeller, 69373 Lyon Cedex 08, France',
+    candidateLabel: 'Candidate',
     fullTitleLabel: 'Full title',
     fullTitle:
       '“Explainable and trustworthy artificial intelligence in the diagnosis, personalised monitoring and therapeutic optimisation of ADHD and bipolar disorder: a critical appraisal of the evidence and a translational framework for pharmacy practice.”',

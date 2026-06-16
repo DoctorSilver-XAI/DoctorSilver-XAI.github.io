@@ -22,6 +22,18 @@ const t = useTranslations(lang);
         </p>
       </div>
       <div class="flex flex-col gap-3 md:items-end md:text-right">
+        <p class="text-sm text-slate-300">
+          {t.footer.candidateLabel} :{' '}
+          <a
+            href={SITE.author.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-medium text-white underline decoration-teal-400/40 underline-offset-2 transition hover:decoration-teal-300"
+            aria-label={`${SITE.author.name}, LinkedIn`}
+          >
+            {SITE.author.name}
+          </a>
+        </p>
         <p class="font-mono text-xs uppercase tracking-[0.16em] text-teal-300/80">{t.hero.kicker}</p>
         <p class="text-sm text-slate-400">{t.footer.note}</p>
         <p class="text-xs text-slate-500">{t.footer.degree}</p>

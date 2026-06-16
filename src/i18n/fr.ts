@@ -25,6 +25,7 @@ export const fr = {
 
   hero: {
     kicker: 'Soutenance de thèse · Juillet 2026 · ISPB Lyon',
+    by: 'Une thèse présentée par',
     title: 'Ouvrir la boîte noire.',
     subtitle:
       'IA explicable et de confiance dans le diagnostic, le suivi personnalisé et l’optimisation thérapeutique du TDAH et du trouble bipolaire : un cadre translationnel pour l’exercice pharmaceutique.',
@@ -174,6 +175,7 @@ export const fr = {
   footer: {
     ispb: 'Institut des Sciences Pharmaceutiques et Biologiques (ISPB), Faculté de Pharmacie de Lyon, Université Claude Bernard Lyon 1.',
     address: '8 avenue Rockefeller, 69373 Lyon Cedex 08',
+    candidateLabel: 'Candidat',
     fullTitleLabel: 'Titre complet',
     fullTitle:
       '« Intelligence artificielle explicable et de confiance dans le diagnostic, le suivi personnalisé et l’optimisation thérapeutique du TDAH et du trouble bipolaire : évaluation critique des preuves et cadre translationnel pour l’exercice pharmaceutique. »',

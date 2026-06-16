@@ -43,6 +43,12 @@ export const SITE = {
   /** Adresse universitaire de réception des disponibilités (fallback mailto). */
   email: 'pierre.gil2@etu.univ-lyon1.fr',
 
+  /** Candidat (auteur de la thèse). Mis en avant : hero + footer, avec lien LinkedIn. */
+  author: {
+    name: 'Pierre Gil',
+    linkedin: 'https://www.linkedin.com/in/pierre-gil/',
+  },
+
   /** Semaine de soutenance proposée. */
   defenseMonth: 7,
   defenseYear: 2026,
@@ -105,7 +111,7 @@ export const SITE = {
     { name: 'Pr Hans-Martin Spath', roleFr: 'Président', roleEn: 'President' },
     { name: 'Pr Maryem Rhanoui', roleFr: 'Directrice de thèse', roleEn: 'Thesis director' },
     { name: 'Dr François Claron', roleFr: 'Membre', roleEn: 'Member' },
-    { name: 'Dr Mathieu Lebrat', roleFr: 'Membre', roleEn: 'Member' },
+    { name: 'Dr Matthieu Lebrat', roleFr: 'Membre', roleEn: 'Member' },
     { name: 'Dr Rachel Megard', roleFr: 'Membre', roleEn: 'Member' },
   ],
 };
