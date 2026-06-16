@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /jury
+Disallow: /en/jury
+
+Sitemap: https://soutenance-pierre.netlify.app/sitemap-index.xml

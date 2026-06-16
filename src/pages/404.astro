@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { useTranslations } from '@/i18n';
+
+const lang = 'fr' as const;
+const t = useTranslations(lang);
+---
+
+<BaseLayout title="404 · Page introuvable" description="Page introuvable" lang={lang} path="/" noindex>
+  <main id="contenu" class="grid min-h-[100svh] place-items-center bg-night-900 px-6 text-center text-white">
+    <div>
+      <p class="font-mono text-sm uppercase tracking-[0.2em] text-teal-300/90">404</p>
+      <h1 class="mt-3 font-display text-4xl font-light sm:text-5xl">Page introuvable</h1>
+      <p class="mx-auto mt-3 max-w-md text-slate-300/80">
+        Cette page n’existe pas (ou plus). Revenons à l’essentiel.
+      </p>
+      <a href="/" class="btn cta-hero mt-8 inline-flex">{t.a11y.toTop}</a>
+    </div>
+  </main>
+</BaseLayout>

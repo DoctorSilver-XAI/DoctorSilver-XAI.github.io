@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Jury from '@/components/pages/Jury.astro';
+import { useTranslations } from '@/i18n';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={t.meta.juryTitle}
+  description={t.meta.juryDescription}
+  lang={lang}
+  path="/jury"
+  noindex
+>
+  <Jury lang={lang} path="/jury" />
+</BaseLayout>

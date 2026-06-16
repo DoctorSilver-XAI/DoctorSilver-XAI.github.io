@@ -1,0 +1,42 @@
+---
+import type { Lang } from '@/i18n';
+import { useTranslations } from '@/i18n';
+import { localizedPath } from '@/i18n/paths';
+
+interface Props {
+  lang: Lang;
+  /** Chemin canonique FR de la page (pour le miroir de langue). */
+  path?: string;
+}
+const { lang, path = '/' } = Astro.props;
+const t = useTranslations(lang);
+const frHref = localizedPath(path, 'fr');
+const enHref = localizedPath(path, 'en');
+---
+
+<nav class="fixed right-4 top-4 z-50 flex items-center gap-2" aria-label={t.nav.language}>
+  <a
+    href="#disponibilites"
+    class="hidden rounded-full border border-white/15 bg-night-900/70 px-4 py-1.5 font-mono text-xs text-white backdrop-blur transition hover:bg-night-800 sm:inline-block"
+  >
+    {t.nav.availability}
+  </a>
+  <div
+    class="flex items-center gap-1 rounded-full border border-white/15 bg-night-900/70 p-1 font-mono text-xs backdrop-blur"
+  >
+    <a
+      href={frHref}
+      aria-current={lang === 'fr' ? 'page' : undefined}
+      class={`inline-flex min-h-[44px] items-center rounded-full px-3.5 py-2 transition ${lang === 'fr' ? 'bg-white/20 text-white' : 'text-white/60 hover:text-white'}`}
+    >
+      {t.nav.fr}
+    </a>
+    <a
+      href={enHref}
+      aria-current={lang === 'en' ? 'page' : undefined}
+      class={`inline-flex min-h-[44px] items-center rounded-full px-3.5 py-2 transition ${lang === 'en' ? 'bg-white/20 text-white' : 'text-white/60 hover:text-white'}`}
+    >
+      {t.nav.en}
+    </a>
+  </div>
+</nav>

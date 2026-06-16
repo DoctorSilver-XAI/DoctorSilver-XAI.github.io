@@ -1,0 +1,25 @@
+---
+import type { Lang } from '@/i18n';
+import Nav from '@/components/nav/Nav.astro';
+import Hero from '@/components/hero/Hero.astro';
+import Scrollytelling from '@/components/scrollytelling/Scrollytelling.astro';
+import Why from '@/components/why/Why.astro';
+import Vote from '@/components/vote/Vote.astro';
+import Footer from '@/components/footer/Footer.astro';
+
+interface Props {
+  lang: Lang;
+  /** Chemin canonique FR (pour le miroir de langue de la nav). */
+  path?: string;
+}
+const { lang, path = '/' } = Astro.props;
+---
+
+<Nav lang={lang} path={path} />
+<Hero lang={lang} />
+<main id="contenu">
+  <Scrollytelling lang={lang} />
+  <Why lang={lang} />
+  <Vote lang={lang} />
+</main>
+<Footer lang={lang} />

@@ -1,0 +1,63 @@
+---
+import type { Lang } from '@/i18n';
+import { useTranslations } from '@/i18n';
+import AttentionCanvas from './AttentionCanvas';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<header class="relative flex min-h-[100svh] flex-col overflow-hidden bg-night-900">
+  <!-- Signature visuelle : carte d'attention (décorative, hydratée à l'inactivité) -->
+  <AttentionCanvas client:idle />
+  <div class="hero-veil"></div>
+
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-6 py-24 sm:px-8"
+  >
+    <div class="mb-7 flex items-center gap-2.5">
+      <span
+        class="inline-block h-2 w-2 rounded-full bg-teal-400 shadow-[0_0_12px_2px_rgba(52,197,211,.7)]"
+      ></span>
+      <span class="font-mono text-[0.72rem] uppercase tracking-[0.18em] text-teal-300/90 sm:text-xs">
+        {t.hero.kicker}
+      </span>
+    </div>
+
+    <h1
+      class="mb-7 font-display text-[clamp(3rem,11vw,7.5rem)] font-light leading-[0.95] tracking-[-0.02em] text-white"
+    >
+      {t.hero.title}
+    </h1>
+
+    <p
+      class="mb-6 max-w-2xl text-[clamp(1.05rem,2.4vw,1.4rem)] font-light leading-relaxed text-slate-200/90"
+    >
+      {t.hero.subtitle}
+    </p>
+
+    <p class="mb-10 max-w-xl border-l-2 border-teal-400/50 pl-4 text-base text-slate-300/75 sm:text-lg">
+      {t.hero.intrigue}
+    </p>
+
+    <div class="flex flex-wrap items-center gap-4">
+      <a href="#disponibilites" class="btn cta-hero text-base">{t.hero.cta}</a>
+      <span class="font-mono text-xs text-slate-400/80">{t.hero.ctaHint}</span>
+    </div>
+  </div>
+
+  <div class="relative z-10 flex justify-center pb-7">
+    <a
+      href="#le-sujet"
+      class="-m-2 inline-flex p-2 text-slate-400/70 transition hover:text-teal-300 motion-safe:animate-floaty"
+      aria-label={t.hero.scrollCue}
+    >
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 5v14M6 13l6 6 6-6" />
+      </svg>
+    </a>
+  </div>
+</header>

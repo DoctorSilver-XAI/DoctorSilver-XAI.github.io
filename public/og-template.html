@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+  Gabarit de l'image Open Graph (1200 × 630).
+  Régénérer public/og.png : `pnpm og`  (script scripts/generate-og.mjs, Playwright/Chromium).
+  Ou capturer manuellement cette page à 1200×630.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      #card {
+        width: 1200px;
+        height: 630px;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(120% 120% at 80% 20%, rgba(25, 162, 176, 0.18), transparent 55%),
+          radial-gradient(100% 100% at 10% 90%, rgba(123, 114, 199, 0.14), transparent 50%),
+          #070b14;
+        color: #fff;
+        font-family: 'IBM Plex Mono', monospace;
+        padding: 76px 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      /* trame de points façon feature map */
+      #card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(52, 197, 211, 0.16) 2px, transparent 2.5px);
+        background-size: 46px 46px;
+        mask-image: linear-gradient(115deg, transparent 40%, #000 95%);
+      }
+      .top { position: relative; display: flex; align-items: center; gap: 14px; }
+      .dot {
+        width: 12px; height: 12px; border-radius: 50%; background: #34c5d3;
+        box-shadow: 0 0 18px 3px rgba(52, 197, 211, 0.7);
+      }
+      .kicker { font-size: 22px; letter-spacing: 0.18em; text-transform: uppercase; color: #7fe0e9; }
+      h1 {
+        position: relative;
+        font-family: 'Fraunces', serif;
+        font-weight: 300;
+        font-size: 132px;
+        line-height: 0.92;
+        letter-spacing: -0.02em;
+      }
+      .sub {
+        position: relative;
+        max-width: 880px;
+        font-size: 25px;
+        line-height: 1.5;
+        color: rgba(226, 232, 240, 0.86);
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      .foot { position: relative; display: flex; justify-content: space-between; font-size: 21px; color: rgba(226, 232, 240, 0.7); }
+      .foot .accent { color: #34c5d3; }
+    </style>
+  </head>
+  <body>
+    <div id="card">
+      <div class="top">
+        <span class="dot"></span>
+        <span class="kicker">Soutenance de thèse — Juillet 2026 · ISPB Lyon</span>
+      </div>
+      <div>
+        <h1>Ouvrir la<br />boîte noire.</h1>
+        <p class="sub">
+          IA explicable et de confiance dans le TDAH et le trouble bipolaire — la place inédite
+          du pharmacien, du médicament au dispositif médical numérique.
+        </p>
+      </div>
+      <div class="foot">
+        <span>Pierre · futur docteur en pharmacie</span>
+        <span class="accent">Indiquez vos disponibilités →</span>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+---
+import '@/styles/tokens.css';
+import '@/styles/global.css';
+import type { Lang } from '@/i18n';
+import { useTranslations } from '@/i18n';
+import { localizedPath } from '@/i18n/paths';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  /** Chemin courant (sans préfixe de langue), ex. '/', '/jury'. Sert au canonical + hreflang. */
+  path?: string;
+  /** Empêche l'indexation (page « discrète » comme /jury). */
+  noindex?: boolean;
+}
+
+const { title, description, lang = 'fr', path = '/', noindex = false } = Astro.props;
+const t = useTranslations(lang);
+
+// URLs canoniques + alternates hreflang (préparé pour le SEO international).
+const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const frPath = localizedPath(path, 'fr');
+const enPath = localizedPath(path, 'en');
+const canonical = site + localizedPath(path, lang);
+
+// Favicon inline (nœud lumineux = la « décision » expliquée). Aucun fichier externe.
+const favicon =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070B14'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%2334C5D3'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2334C5D3' stroke-opacity='.35'/%3E%3C/svg%3E";
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Marque le HTML « JS actif » avant le premier rendu : sans JS, le contenu
+         des révélations reste visible (no-JS friendly + bon pour le SEO). -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <link rel="alternate" hreflang="fr" href={site + frPath} />
+    <link rel="alternate" hreflang="en" href={site + enPath} />
+    <link rel="alternate" hreflang="x-default" href={site + frPath} />
+
+    <meta name="theme-color" content="#070B14" />
+    <link rel="icon" href={favicon} />
+
+    <!-- Open Graph / partage -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_US'} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={site + '/og.png'} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Polices : Fraunces (serif éditorial), IBM Plex Sans (corps), IBM Plex Mono (données) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a href="#contenu" class="skip-link">{t.a11y.skip}</a>
+    <slot />
+
+    <!-- Révélations au scroll (IntersectionObserver). Respecte prefers-reduced-motion. -->
+    <script>
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const els = document.querySelectorAll<HTMLElement>('.reveal');
+      if (reduce || !('IntersectionObserver' in window)) {
+        els.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+        );
+        els.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>

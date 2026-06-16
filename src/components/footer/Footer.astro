@@ -1,0 +1,38 @@
+---
+import type { Lang } from '@/i18n';
+import { useTranslations } from '@/i18n';
+import { SITE } from '@/config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<footer class="bg-night-900 py-16 text-slate-300/80">
+  <div class="mx-auto max-w-6xl px-6 sm:px-8">
+    <div class="grid gap-10 md:grid-cols-[1.3fr_1fr]">
+      <div>
+        <p class="mb-3 font-display text-2xl text-white">{t.hero.title}</p>
+        <p class="max-w-md text-sm leading-relaxed text-slate-400">{t.footer.ispb}</p>
+        <p class="mt-4 max-w-lg font-mono text-[0.7rem] leading-relaxed text-slate-500">
+          <span>{t.footer.fullTitleLabel} : </span>
+          <span class="text-slate-400">{t.footer.fullTitle}</span>
+        </p>
+      </div>
+      <div class="flex flex-col gap-3 md:items-end md:text-right">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-teal-300/80">{t.hero.kicker}</p>
+        <p class="text-sm text-slate-400">{t.footer.note}</p>
+        <p class="text-xs text-slate-500">{t.footer.degree}</p>
+        <p class="text-xs text-slate-500">{SITE.venue.address}</p>
+      </div>
+    </div>
+    <div
+      class="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-slate-500"
+    >
+      <span>{t.footer.credit}</span>
+      <span class="font-mono">Lyon · MMXXVI</span>
+    </div>
+  </div>
+</footer>

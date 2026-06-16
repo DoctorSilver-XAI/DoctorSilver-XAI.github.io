@@ -1,0 +1,22 @@
+---
+import type { Lang } from '@/i18n';
+import { useTranslations } from '@/i18n';
+import Nav from '@/components/nav/Nav.astro';
+import Vote from '@/components/vote/Vote.astro';
+import Footer from '@/components/footer/Footer.astro';
+
+interface Props {
+  lang: Lang;
+  path?: string;
+}
+const { lang, path = '/jury' } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Nav lang={lang} path={path} />
+<main id="contenu" class="bg-gradient-to-b from-paper to-[#EAF0F7] pt-16">
+  <!-- h1 de la page (la section Vote n'expose qu'un h2) : masqué visuellement, lu par les AT. -->
+  <h1 class="sr-only">{t.vote.heading}</h1>
+  <Vote lang={lang} />
+</main>
+<Footer lang={lang} />

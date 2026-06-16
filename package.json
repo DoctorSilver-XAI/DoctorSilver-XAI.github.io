@@ -1,0 +1,54 @@
+{
+  "name": "these-soutenance",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mini-site de soutenance de thèse (ISPB Lyon) — recueil des disponibilités du jury, RSVP invités et vitrine académique. Astro + React + Supabase.",
+  "engines": {
+    "node": "18.20.8 || ^20.3.0 || >=22.0.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "typecheck": "astro check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "og": "node scripts/generate-og.mjs",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.14",
+    "@astrojs/react": "^4.4.2",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/tailwind": "^5.1.5",
+    "@supabase/supabase-js": "^2.108.1",
+    "astro": "^5.18.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.19"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.5",
+    "eslint": "^9.39.4",
+    "eslint-plugin-astro": "^1.7.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "prettier": "^3.8.4",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.61.0",
+    "vitest": "^2.1.9"
+  }
+}

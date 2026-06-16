@@ -1,0 +1,50 @@
+/**
+ * Design tokens (CSS custom properties).
+ * Source de vérité partagée pour les pièces qui ne passent pas par Tailwind
+ * (canvas, dégradés, effets). Garder synchronisé avec tailwind.config.ts.
+ */
+:root {
+  /* Bleu nuit (fonds sombres) */
+  --night-900: #070b14;
+  --night-800: #0b1120;
+  --night-700: #0f1828;
+  --night-600: #152138;
+  --night-500: #1d2c46;
+
+  /* Bases claires */
+  --paper: #f4f7fb;
+  --card: #ffffff;
+  --line: #e2e8f2;
+
+  /* Encre (texte sur fond clair) */
+  --ink-900: #0e1726;
+  --ink-700: #243246;
+  --ink-500: #51617a;
+  --ink-400: #7c8aa0;
+
+  /* Bleu clinique */
+  --clinical-600: #2c56a0;
+  --clinical-500: #3568be;
+  --clinical-400: #5b86d0;
+
+  /* Cyan / teal médical (accent d'attention) */
+  --teal-600: #127e89;
+  --teal-500: #19a2b0;
+  --teal-400: #34c5d3;
+  --teal-300: #7fe0e9;
+
+  /* Violet « neuro » (liens de signal) */
+  --neuro-500: #7b72c7;
+  --neuro-400: #9a92d8;
+
+  /* Typographies */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Rythme */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 26px;
+}
