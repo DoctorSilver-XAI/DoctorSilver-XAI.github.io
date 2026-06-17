@@ -27,14 +27,14 @@ const enHref = localizedPath(path, 'en');
     <a
       href={frHref}
       aria-current={lang === 'fr' ? 'page' : undefined}
-      class={`inline-flex min-h-[44px] items-center rounded-full px-3.5 py-2 transition ${lang === 'fr' ? 'bg-white/20 text-white' : 'text-white/60 hover:text-white'}`}
+      class={`relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full px-3.5 py-2 transition ${lang === 'fr' ? 'z-0 bg-white/20 text-white' : 'z-10 text-white/60 hover:text-white'}`}
     >
       {t.nav.fr}
     </a>
     <a
       href={enHref}
       aria-current={lang === 'en' ? 'page' : undefined}
-      class={`inline-flex min-h-[44px] items-center rounded-full px-3.5 py-2 transition ${lang === 'en' ? 'bg-white/20 text-white' : 'text-white/60 hover:text-white'}`}
+      class={`relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full px-3.5 py-2 transition ${lang === 'en' ? 'z-0 bg-white/20 text-white' : 'z-10 text-white/60 hover:text-white'}`}
     >
       {t.nav.en}
     </a>
