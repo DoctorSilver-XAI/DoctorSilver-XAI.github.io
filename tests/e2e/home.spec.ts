@@ -9,8 +9,10 @@ test('accueil FR : hero, créneau privilégié, sélection et récapitulatif', a
   await expect(preferredSlots).toHaveCount(2);
   const slot = preferredSlots.filter({ hasText: '9 h–11 h' }).first();
   await slot.scrollIntoViewIfNeeded();
+  // L'îlot React est hydraté en client:visible : on attend le raccord client avant le clic.
+  await page.waitForTimeout(1000);
   await expect(slot).toBeVisible();
-  await expect(page.getByText('Créneau privilégié')).toHaveCount(2);
+  await expect(page.locator('.slot__badge')).toHaveCount(2);
 
   await expect(slot).toHaveAttribute('aria-pressed', 'false');
   await slot.click();
