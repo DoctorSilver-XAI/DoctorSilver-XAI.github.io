@@ -1,7 +1,7 @@
 /**
  * CONFIGURATION MÉTIER : source unique, typée et documentée.
  * Tout ce qui peut être ajusté sans toucher au reste du code vit ici :
- * e-mail de réception, jours/créneaux proposés, créneau recommandé,
+ * e-mail de réception, jours/créneaux proposés, créneaux recommandés,
  * confirmations réelles (preuve sociale), lieu, capacité, date verrouillée.
  */
 
@@ -71,13 +71,12 @@ export const SITE = {
   ] satisfies SlotDef[],
 
   /**
-   * Créneau recommandé (mis en avant, halo + badge).
-   * INVARIANT honnêteté : doit correspondre à une confirmation jury RÉELLE, présente
-   * à la fois dans `confirmed` (ci-dessous) ET dans supabase/seed.sql. Ne pas appliquer
-   * la migration sans le seed (cf. docs/SUPABASE.md), sinon le badge « déjà confirmé »
-   * coexisterait avec un compteur à 0.
+   * Créneaux recommandés (mis en avant, halo + badge).
+   * Le badge signale les créneaux à privilégier pour converger plus vite.
+   * INVARIANT honnêteté : les confirmations nominatives restent séparées dans `confirmed`
+   * et doivent correspondre à une confirmation RÉELLE, présente aussi dans supabase/seed.sql.
    */
-  recommendedSlot: 'mar7__s9' as SlotKey,
+  recommendedSlots: ['mar7__s9', 'jeu9__s9'] as SlotKey[],
 
   /**
    * Confirmations RÉELLES et consenties : uniquement de la preuve sociale véridique.
@@ -142,4 +141,8 @@ export function dayById(id: string): DayDef | undefined {
 
 export function slotById(id: string): SlotDef | undefined {
   return SITE.slots.find((s) => s.id === id);
+}
+
+export function isRecommendedSlot(key: SlotKey): boolean {
+  return SITE.recommendedSlots.includes(key);
 }

@@ -100,6 +100,9 @@ export const fr = {
       'Aucun créneau coché pour le moment. Sélectionnez un ou plusieurs créneaux ci-dessus.',
     summaryRole: 'Rôle',
     summaryNameMissing: '(nom non renseigné)',
+    readyTitle: 'Prêt à envoyer',
+    readyBody:
+      'Vérifiez votre nom et les créneaux cochés, puis validez. Un message de confirmation s’affichera dès que l’enregistrement sera terminé.',
     countOne: '{n} créneau sélectionné',
     countMany: '{n} créneaux sélectionnés',
     send: 'Envoyer mes disponibilités',
@@ -113,8 +116,11 @@ export const fr = {
     alreadyVotedTitle: 'Vous avez déjà répondu',
     alreadyVotedBody:
       'Vos disponibilités sont déjà enregistrées, merci ! Pour les modifier, contactez-moi directement par e-mail.',
-    successTitle: 'Merci, c’est noté !',
-    successBody: 'Vos disponibilités ont bien été enregistrées. Vous pouvez fermer cette page.',
+    successTitle: 'Disponibilités enregistrées',
+    successBody:
+      'C’est bien validé : vos créneaux sont transmis et ajoutés au tableau de convergence.',
+    successSelection: 'Créneaux enregistrés',
+    successNext: 'Vous pouvez fermer cette page. Pour corriger une réponse, contactez-moi par e-mail.',
     errorTitle: 'L’enregistrement a échoué',
     errorBody:
       'Pas d’inquiétude : utilisez le bouton ci-dessous pour m’envoyer vos disponibilités par e-mail.',
@@ -131,6 +137,33 @@ export const fr = {
     votes: 'disponibles',
     best: 'Créneau le plus suivi',
     empty: 'Pas encore de réponse.',
+  },
+
+  admin: {
+    open: 'Accès admin',
+    title: 'Résultats détaillés',
+    lead: 'Accès privé léger pour visualiser les réponses nominatives et les compteurs.',
+    passwordLabel: 'Mot de passe',
+    passwordPlaceholder: 'Mot de passe',
+    unlock: 'Ouvrir',
+    wrongPassword: 'Mot de passe incorrect.',
+    close: 'Fermer',
+    refresh: 'Rafraîchir',
+    loading: 'Chargement…',
+    unavailable: 'Supabase n’est pas configuré dans cet environnement.',
+    error: 'Impossible de charger les résultats pour le moment.',
+    availabilityTitle: 'Disponibilités reçues',
+    rsvpTitle: 'RSVP reçus',
+    empty: 'Aucune réponse pour le moment.',
+    role: 'Rôle',
+    slots: 'Créneaux',
+    comment: 'Commentaire',
+    companions: 'Accompagnant·e·s',
+    presence: 'Présence',
+    preferredSlot: 'Créneau préféré',
+    email: 'E-mail',
+    submittedAt: 'Envoyé le',
+    noValue: '—',
   },
 
   rsvp: {

@@ -14,13 +14,16 @@ describe('countsToMap', () => {
 });
 
 describe('aggregateMatrix', () => {
-  it('produit 5 jours × 4 créneaux, avec les compteurs et le drapeau recommandé', () => {
-    const m = aggregateMatrix({ mar7__s9: 3 });
+  it('produit 5 jours × 4 créneaux, avec les compteurs et les drapeaux recommandés', () => {
+    const m = aggregateMatrix({ mar7__s9: 3, jeu9__s9: 2 });
     expect(m).toHaveLength(5);
     m.forEach((row) => expect(row.cells).toHaveLength(4));
-    const cell = m.find((r) => r.day.id === 'mar7')?.cells.find((c) => c.slot.id === 's9');
-    expect(cell?.n).toBe(3);
-    expect(cell?.recommended).toBe(true);
+    const tuesday = m.find((r) => r.day.id === 'mar7')?.cells.find((c) => c.slot.id === 's9');
+    const thursday = m.find((r) => r.day.id === 'jeu9')?.cells.find((c) => c.slot.id === 's9');
+    expect(tuesday?.n).toBe(3);
+    expect(tuesday?.recommended).toBe(true);
+    expect(thursday?.n).toBe(2);
+    expect(thursday?.recommended).toBe(true);
   });
 });
 

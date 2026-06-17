@@ -4,11 +4,13 @@ test('accueil FR : hero, créneau privilégié, sélection et récapitulatif', a
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ouvrir la boîte noire.');
 
-  // Le créneau recommandé (mardi 7 juillet 9 h–11 h) porte la classe unique .slot--reco.
-  const slot = page.locator('.slot--reco');
+  // Les créneaux privilégiés portent la classe .slot--reco.
+  const preferredSlots = page.locator('.slot--reco');
+  await expect(preferredSlots).toHaveCount(2);
+  const slot = preferredSlots.filter({ hasText: '9 h–11 h' }).first();
   await slot.scrollIntoViewIfNeeded();
   await expect(slot).toBeVisible();
-  await expect(page.getByText('Créneau privilégié')).toBeVisible();
+  await expect(page.getByText('Créneau privilégié')).toHaveCount(2);
 
   await expect(slot).toHaveAttribute('aria-pressed', 'false');
   await slot.click();

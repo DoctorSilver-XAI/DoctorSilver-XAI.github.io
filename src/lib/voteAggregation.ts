@@ -1,4 +1,12 @@
-import { SITE, slotKey, allSlotKeys, type DayDef, type SlotDef, type SlotKey } from '@/config/site';
+import {
+  SITE,
+  slotKey,
+  allSlotKeys,
+  isRecommendedSlot,
+  type DayDef,
+  type SlotDef,
+  type SlotKey,
+} from '@/config/site';
 
 /** Une ligne de la table/vue de compteurs Supabase. */
 export interface SlotCount {
@@ -30,7 +38,7 @@ export function aggregateMatrix(map: Record<SlotKey, number>): MatrixRow[] {
     day,
     cells: SITE.slots.map((slot) => {
       const key = slotKey(day.id, slot.id);
-      return { slot, key, n: map[key] ?? 0, recommended: key === SITE.recommendedSlot };
+      return { slot, key, n: map[key] ?? 0, recommended: isRecommendedSlot(key) };
     }),
   }));
 }

@@ -18,6 +18,13 @@ describe('describeSlot', () => {
     expect(s).toContain('9 h–11 h');
     expect(s).toContain('⭐');
   });
+
+  it('décrit le second créneau recommandé avec ⭐ (FR)', () => {
+    const s = describeSlot('jeu9__s9', 'fr');
+    expect(s).toContain('Jeudi 9 juillet 2026');
+    expect(s).toContain('9 h–11 h');
+    expect(s).toContain('⭐');
+  });
 });
 
 describe('buildSummaryText', () => {

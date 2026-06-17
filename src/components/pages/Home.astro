@@ -6,6 +6,7 @@ import Scrollytelling from '@/components/scrollytelling/Scrollytelling.astro';
 import Why from '@/components/why/Why.astro';
 import Vote from '@/components/vote/Vote.astro';
 import Footer from '@/components/footer/Footer.astro';
+import AdminPanel from '@/components/admin/AdminPanel';
 
 interface Props {
   lang: Lang;
@@ -23,3 +24,4 @@ const { lang, path = '/' } = Astro.props;
   <Vote lang={lang} />
 </main>
 <Footer lang={lang} />
+<AdminPanel lang={lang} client:load />

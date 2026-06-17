@@ -1,6 +1,14 @@
 import type { Lang } from '@/i18n';
 import { useTranslations, interpolate } from '@/i18n';
-import { SITE, dayById, slotById, splitKey, type Role, type SlotKey } from '@/config/site';
+import {
+  SITE,
+  dayById,
+  slotById,
+  splitKey,
+  isRecommendedSlot,
+  type Role,
+  type SlotKey,
+} from '@/config/site';
 import { formatDayFull, formatSlot } from './datetime';
 
 export interface AvailabilityInput {
@@ -25,7 +33,7 @@ export function describeSlot(key: SlotKey, lang: Lang): string {
   const day = dayById(dayId);
   const slot = slotById(slotId);
   if (!day || !slot) return key;
-  const star = key === SITE.recommendedSlot ? ' ⭐' : '';
+  const star = isRecommendedSlot(key) ? ' ⭐' : '';
   return `${formatDayFull(day, lang)} · ${formatSlot(slot, lang)}${star}`;
 }
 

@@ -12,6 +12,25 @@ export interface RsvpSummary {
   taux_occupation_pct: number;
 }
 
+export interface AdminDisponibilite {
+  id: string;
+  nom: string;
+  role: Role;
+  creneaux: SlotKey[];
+  commentaire: string | null;
+  created_at: string;
+}
+
+export interface AdminRsvp {
+  id: string;
+  nom: string;
+  nb_accompagnants: number;
+  presence: Presence;
+  creneau_prefere: SlotKey | null;
+  email: string | null;
+  created_at: string;
+}
+
 /* ----------------------------- LECTURE (agrégats, zéro PII) ----------------------------- */
 
 /** Compteurs de disponibilités par créneau (table `creneau_counts`). */
@@ -31,6 +50,26 @@ export async function fetchRsvpSummary(): Promise<RsvpSummary | null> {
   const { data, error } = await supabase.from('rsvp_summary').select('*').single();
   if (error) throw error;
   return data as RsvpSummary;
+}
+
+/** Lecture nominative réservée au panneau admin léger (protégé côté UI par mot de passe). */
+export async function fetchAdminDisponibilites(password: string): Promise<AdminDisponibilite[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase.rpc('admin_disponibilites', {
+    p_password: password,
+  });
+  if (error) throw error;
+  return (data ?? []) as AdminDisponibilite[];
+}
+
+/** Lecture nominative réservée au panneau admin léger (protégé côté UI par mot de passe). */
+export async function fetchAdminRsvp(password: string): Promise<AdminRsvp[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase.rpc('admin_rsvp', {
+    p_password: password,
+  });
+  if (error) throw error;
+  return (data ?? []) as AdminRsvp[];
 }
 
 /**

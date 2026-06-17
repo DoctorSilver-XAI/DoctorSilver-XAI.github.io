@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Dict, Lang } from '@/i18n';
 import { interpolate } from '@/i18n';
-import { SITE, slotKey, type Role, type SlotKey } from '@/config/site';
+import { SITE, isRecommendedSlot, slotKey, type Role, type SlotKey } from '@/config/site';
 import { formatDayFull, formatWeekday, formatDayDate, formatSlot } from '@/lib/datetime';
 import { buildMailto, buildSummaryText, describeSlot, orderSlotKeys } from '@/lib/mailtoFallback';
 import { hasSupabase } from '@/lib/supabaseClient';
@@ -86,6 +86,7 @@ export default function VoteGrid({ lang, t }: Props) {
 
   const orderedKeys = useMemo(() => orderSlotKeys([...selected]), [selected]);
   const ready = name.trim().length > 0 && selected.size > 0 && !alreadyVoted;
+  const canSend = ready && status !== 'sending' && status !== 'success';
 
   function toggle(key: SlotKey) {
     setSelected((prev) => {
@@ -100,7 +101,7 @@ export default function VoteGrid({ lang, t }: Props) {
   const payload = () => ({ name: name.trim(), role, slots: orderedKeys, lang });
 
   async function onSend() {
-    if (!ready || status === 'sending') return;
+    if (!canSend) return;
     // Sans backend configuré : on bascule directement sur le mailto.
     if (!hasSupabase) {
       window.location.href = buildMailto(payload());
@@ -269,7 +270,7 @@ export default function VoteGrid({ lang, t }: Props) {
               <div className="day-slots">
                 {SITE.slots.map((slot) => {
                   const key = slotKey(day.id, slot.id);
-                  const recommended = key === SITE.recommendedSlot;
+                  const recommended = isRecommendedSlot(key);
                   const confirmed = SITE.confirmed[key];
                   const ariaLabel =
                     `${formatDayFull(day, lang)}, ${formatSlot(slot, lang)}` +
@@ -337,7 +338,7 @@ export default function VoteGrid({ lang, t }: Props) {
                       <li key={key} className="flex items-start gap-2">
                         <span
                           className={`mt-1.5 h-1.5 w-1.5 flex-none rounded-full ${
-                            key === SITE.recommendedSlot ? 'bg-teal-500' : 'bg-clinical-500'
+                            isRecommendedSlot(key) ? 'bg-teal-500' : 'bg-clinical-500'
                           }`}
                         />
                         <span>{describeSlot(key, lang)}</span>
@@ -354,13 +355,13 @@ export default function VoteGrid({ lang, t }: Props) {
             <button
               type="button"
               className="btn btn-primary w-full"
-              aria-disabled={!ready || status === 'sending'}
+              aria-disabled={!canSend}
               onClick={onSend}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} aria-hidden="true">
                 <path d="M4 5h16v14H4zM4 6l8 6 8-6" />
               </svg>
-              {status === 'sending' ? t.sending : t.send}
+              {status === 'success' ? t.sentDb : status === 'sending' ? t.sending : t.send}
             </button>
 
             <button type="button" className="btn btn-ghost w-full" onClick={onCopy}>
@@ -375,10 +376,52 @@ export default function VoteGrid({ lang, t }: Props) {
               <p className="text-xs text-ink-500">{!name.trim() ? t.needName : t.needSlot}</p>
             )}
 
+            {ready && status === 'idle' && (
+              <div className="rounded-xl border border-clinical-400/35 bg-[#F7FAFF] p-4 text-sm">
+                <p className="font-semibold text-clinical-700">{t.readyTitle}</p>
+                <p className="mt-1 leading-relaxed text-ink-700">{t.readyBody}</p>
+              </div>
+            )}
+
             {status === 'success' && (
-              <div className="rounded-xl border border-teal-500/40 bg-teal-50 p-4 text-sm" role="status">
-                <p className="font-semibold text-teal-700">{t.successTitle}</p>
-                <p className="mt-1 text-ink-700">{t.successBody}</p>
+              <div
+                className="rounded-2xl border border-teal-500/45 bg-teal-50 p-5 text-sm shadow-[0_20px_40px_-28px_rgba(25,162,176,.65)]"
+                role="status"
+                aria-live="polite"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-teal-500 text-white">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2.4}
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12l5 5L20 7" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p className="font-display text-xl text-teal-700">{t.successTitle}</p>
+                    <p className="mt-1 leading-relaxed text-ink-700">{t.successBody}</p>
+                  </div>
+                </div>
+                <div className="mt-4 rounded-xl border border-teal-500/25 bg-white/70 p-4">
+                  <p className="font-mono text-xs uppercase tracking-wider text-teal-700">
+                    {t.successSelection} · {countLabel}
+                  </p>
+                  <ul className="mt-3 space-y-1.5 text-ink-700">
+                    {orderedKeys.map((key) => (
+                      <li key={key} className="flex items-start gap-2">
+                        <span className="mt-1.5 h-1.5 w-1.5 flex-none rounded-full bg-teal-500" />
+                        <span>{describeSlot(key, lang)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <p className="mt-3 leading-relaxed text-ink-600">{t.successNext}</p>
               </div>
             )}
 
