@@ -257,45 +257,62 @@ export default function VoteGrid({ lang, t }: Props) {
           </div>
         </div>
 
-        <div className="vote-grid">
-          {SITE.days.map((day) => (
-            <div className="day-col" key={day.id}>
-              <div className="day-head">
-                <div>
-                  <div className="day-name">{formatWeekday(day, lang)}</div>
-                  <div className="day-date">{formatDayDate(day, lang)}</div>
-                </div>
-                {day.avoid && <span className="day-flag">{t.avoidFlag}</span>}
-              </div>
-              <div className="day-slots">
-                {SITE.slots.map((slot) => {
-                  const key = slotKey(day.id, slot.id);
-                  const recommended = isRecommendedSlot(key);
-                  const confirmed = SITE.confirmed[key];
-                  const ariaLabel =
-                    `${formatDayFull(day, lang)}, ${formatSlot(slot, lang)}` +
-                    (recommended ? `, ${t.recoReason}` : '') +
-                    (day.avoid ? `, ${t.avoidFlag}` : '');
-                  return (
-                    <SlotCard
-                      key={key}
-                      label={formatSlot(slot, lang)}
-                      ariaLabel={ariaLabel}
-                      selected={selected.has(key)}
-                      recommended={recommended}
-                      avoid={Boolean(day.avoid)}
-                      count={counts[key] ?? 0}
-                      confirmedLabel={confirmed ? (lang === 'fr' ? confirmed.labelFr : confirmed.labelEn) : undefined}
-                      confirmedAvatars={confirmed?.avatars}
-                      t={t}
-                      onToggle={() => toggle(key)}
-                    />
-                  );
-                })}
-              </div>
+        {SITE.windows.map((window) => (
+          <section
+            key={window.id}
+            className={window.tier === 'fallback' ? 'mt-8 opacity-80' : 'mt-2'}
+            aria-label={lang === 'fr' ? window.titleFr : window.titleEn}
+          >
+            <div className="mb-3">
+              <h4
+                className={`font-display text-lg ${
+                  window.tier === 'fallback' ? 'text-ink-600' : 'text-ink-900'
+                }`}
+              >
+                {lang === 'fr' ? window.titleFr : window.titleEn}
+              </h4>
+              <p className="mt-1 text-sm text-ink-500">
+                {lang === 'fr' ? window.noteFr : window.noteEn}
+              </p>
             </div>
-          ))}
-        </div>
+            <div className="vote-grid">
+              {window.days.map((day) => (
+                <div className="day-col" key={day.id}>
+                  <div className="day-head">
+                    <div>
+                      <div className="day-name">{formatWeekday(day, lang)}</div>
+                      <div className="day-date">{formatDayDate(day, lang)}</div>
+                    </div>
+                    {day.avoid && <span className="day-flag">{t.avoidFlag}</span>}
+                  </div>
+                  <div className="day-slots">
+                    {SITE.slots.map((slot) => {
+                      const key = slotKey(day.id, slot.id);
+                      const recommended = isRecommendedSlot(key);
+                      const ariaLabel =
+                        `${formatDayFull(day, lang)}, ${formatSlot(slot, lang)}` +
+                        (recommended ? `, ${t.recoReason}` : '') +
+                        (day.avoid ? `, ${t.avoidFlag}` : '');
+                      return (
+                        <SlotCard
+                          key={key}
+                          label={formatSlot(slot, lang)}
+                          ariaLabel={ariaLabel}
+                          selected={selected.has(key)}
+                          recommended={recommended}
+                          avoid={Boolean(day.avoid)}
+                          count={counts[key] ?? 0}
+                          t={t}
+                          onToggle={() => toggle(key)}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
         {hasSupabase && (
           <p className="mt-4 flex items-center gap-2 font-mono text-xs text-ink-500">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-500" />

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { Dict, Lang } from '@/i18n';
-import { SITE, slotKey, type Presence } from '@/config/site';
+import { SITE, allDays, slotKey, type Presence } from '@/config/site';
 import { formatDayFull, formatSlot } from '@/lib/datetime';
 import { submitRsvp } from '@/lib/availability';
 
@@ -23,7 +23,7 @@ export default function RsvpForm({ lang, t }: Props) {
 
   const slotOptions = useMemo(
     () =>
-      SITE.days.flatMap((d) =>
+      allDays().flatMap((d) =>
         SITE.slots.map((s) => ({
           key: slotKey(d.id, s.id),
           label: `${formatDayFull(d, lang)} · ${formatSlot(s, lang)}`,
