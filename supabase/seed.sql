@@ -1,28 +1,26 @@
 -- =====================================================================
--- Seed : 3 disponibilités RÉELLES déjà confirmées sur mar7__s9 (idempotent).
---   Dr François Claron (jury) + 2 invités (parents de Pierre).
+-- Seed : NEUTRALISÉ — décision de cadrage 2026-06-19.
+--
+-- Contexte : la collecte de disponibilités repart à zéro sur les nouvelles
+-- dates (semaine du 20-24 juillet 2026, repli 17-21 août 2026), SANS
+-- preuve sociale. Les anciens créneaux mar7__s9 (et toute la semaine
+-- lun6__*/mar7__*/mer8__*/jeu9__*/ven10__*) sont abandonnés.
+--
+-- Ce fichier ne seed RIEN. Le re-jouer est sans effet sur la base.
+--
+-- Si une confirmation RÉELLE doit être pré-enregistrée à l'avenir,
+-- l'ajouter DÉLIBÉRÉMENT ici sur un créneau courant (ex. lun20__s9),
+-- avec les UUID et la date réels — jamais ré-insérer automatiquement
+-- des entrées fictives ou obsolètes.
+--
 -- À exécuter via Studio / service_role (JAMAIS depuis le client web).
--- Les triggers incrémentent automatiquement creneau_counts ; les `id`
--- déterministes + `on conflict do nothing` garantissent l'idempotence
--- (pas de double comptage si on relance le seed).
 -- =====================================================================
 
 begin;
 
-insert into public.disponibilites (id, nom, role, creneaux, commentaire, created_at)
-values
-  ('00000000-0000-0000-0000-000000000001',
-   'Dr François Claron', 'jury',   array['mar7__s9'],
-   'Confirmation membre du jury', '2026-06-01T09:00:00Z'),
-  ('00000000-0000-0000-0000-000000000002',
-   'Parent de Pierre (1)', 'invite', array['mar7__s9'],
-   null, '2026-06-01T09:05:00Z'),
-  ('00000000-0000-0000-0000-000000000003',
-   'Parent de Pierre (2)', 'invite', array['mar7__s9'],
-   null, '2026-06-01T09:06:00Z')
-on conflict (id) do nothing;
+-- (aucune insertion — corpus vide par décision 2026-06-19)
 
 commit;
 
--- Vérification (lecture seule, attendu : mar7__s9 = 3) :
---   select * from public.dispo_counts where creneau = 'mar7__s9';
+-- Vérification (lecture seule, attendu : toutes les lignes n_dispo = 0) :
+--   select * from public.dispo_counts order by creneau;
