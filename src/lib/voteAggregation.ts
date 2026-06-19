@@ -1,5 +1,6 @@
 import {
   SITE,
+  allDays,
   slotKey,
   allSlotKeys,
   isRecommendedSlot,
@@ -34,7 +35,7 @@ export interface MatrixRow {
 
 /** Construit la matrice jours × créneaux avec les compteurs (0 par défaut). */
 export function aggregateMatrix(map: Record<SlotKey, number>): MatrixRow[] {
-  return SITE.days.map((day) => ({
+  return allDays().map((day) => ({
     day,
     cells: SITE.slots.map((slot) => {
       const key = slotKey(day.id, slot.id);

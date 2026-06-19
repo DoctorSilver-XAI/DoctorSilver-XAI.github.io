@@ -21,7 +21,7 @@ export const en: Dict = {
   },
 
   hero: {
-    kicker: 'Thesis defense · July 2026 · ISPB Lyon',
+    kicker: 'Thesis defense · Summer 2026 · ISPB Lyon',
     by: 'A thesis presented by',
     title: 'Opening the black box.',
     subtitle:
@@ -72,7 +72,7 @@ export const en: Dict = {
   vote: {
     eyebrow: 'Your availability',
     heading: 'Help me set the date.',
-    lead: 'Tick every time slot that works for you during the week of 6–10 July 2026. The more you tick, the easier it is to bring everyone together.',
+    lead: 'Tick every time slot that works for you. The week of 20–24 July 2026 is preferred; the week of 17–21 August is only a fallback if no common date emerges in July. The more you tick, the easier it is to bring everyone together.',
     step1: 'You',
     step2: 'Your time slots',
     step3: 'Summary & send',
@@ -87,7 +87,7 @@ export const en: Dict = {
     legendRecommended: 'Recommended',
     legendAvoid: 'Avoid',
     recoBadge: '⭐ Preferred slot',
-    recoReason: 'Recommended because already confirmed by a jury member.',
+    recoReason: 'Slot to prioritise so everyone can be gathered sooner.',
     avoidFlag: 'avoid',
     stateFree: 'Available',
     stateSelected: 'Selected',
@@ -212,7 +212,7 @@ export const en: Dict = {
   },
 
   meta: {
-    homeTitle: 'Opening the black box · Thesis defense · ISPB Lyon · July 2026',
+    homeTitle: 'Opening the black box · Thesis defense · ISPB Lyon · Summer 2026',
     homeDescription:
       'Thesis defense at the ISPB (Lyon): explainable, trustworthy AI in ADHD and bipolar disorder. Share your availability to help set the date.',
     juryTitle: 'Availability · Thesis defense · ISPB Lyon',

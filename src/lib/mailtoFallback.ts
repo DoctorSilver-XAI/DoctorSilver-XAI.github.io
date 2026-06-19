@@ -2,6 +2,7 @@ import type { Lang } from '@/i18n';
 import { useTranslations, interpolate } from '@/i18n';
 import {
   SITE,
+  allDays,
   dayById,
   slotById,
   splitKey,
@@ -23,7 +24,7 @@ export interface AvailabilityInput {
 export function orderSlotKeys(keys: SlotKey[]): SlotKey[] {
   const order = new Map<string, number>();
   let i = 0;
-  for (const d of SITE.days) for (const s of SITE.slots) order.set(`${d.id}__${s.id}`, i++);
+  for (const d of allDays()) for (const s of SITE.slots) order.set(`${d.id}__${s.id}`, i++);
   return [...keys].sort((a, b) => (order.get(a) ?? 999) - (order.get(b) ?? 999));
 }
 

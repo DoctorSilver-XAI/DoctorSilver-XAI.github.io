@@ -24,7 +24,7 @@ export const fr = {
   },
 
   hero: {
-    kicker: 'Soutenance de thèse · Juillet 2026 · ISPB Lyon',
+    kicker: 'Soutenance de thèse · Été 2026 · ISPB Lyon',
     by: 'Une thèse présentée par',
     title: 'Ouvrir la boîte noire.',
     subtitle:
@@ -75,7 +75,7 @@ export const fr = {
   vote: {
     eyebrow: 'Vos disponibilités',
     heading: 'Aidez-moi à fixer la date.',
-    lead: 'Cochez tous les créneaux qui vous conviennent dans la semaine du 6 au 10 juillet 2026. Plus vous en cochez, plus il sera simple de réunir tout le monde.',
+    lead: 'Cochez tous les créneaux qui vous conviennent. La semaine du 20 au 24 juillet 2026 est privilégiée ; la semaine du 17 au 21 août n’est qu’un repli si aucune date commune n’émerge en juillet. Plus vous cochez de créneaux, plus il sera simple de réunir tout le monde.',
     step1: 'Vous',
     step2: 'Vos créneaux',
     step3: 'Récapitulatif & envoi',
@@ -90,7 +90,7 @@ export const fr = {
     legendRecommended: 'Recommandé',
     legendAvoid: 'À éviter',
     recoBadge: '⭐ Créneau privilégié',
-    recoReason: 'Recommandé car déjà confirmé par un membre du jury.',
+    recoReason: 'Créneau à privilégier pour réunir tout le monde plus vite.',
     avoidFlag: 'à éviter',
     stateFree: 'Disponible',
     stateSelected: 'Sélectionné',
@@ -218,7 +218,7 @@ export const fr = {
   },
 
   meta: {
-    homeTitle: 'Ouvrir la boîte noire · Soutenance de thèse · ISPB Lyon · Juillet 2026',
+    homeTitle: 'Ouvrir la boîte noire · Soutenance de thèse · ISPB Lyon · Été 2026',
     homeDescription:
       'Soutenance de thèse d’exercice à l’ISPB (Lyon) : IA explicable et de confiance dans le TDAH et le trouble bipolaire. Indiquez vos disponibilités pour fixer la date.',
     juryTitle: 'Disponibilités · Soutenance · ISPB Lyon',
