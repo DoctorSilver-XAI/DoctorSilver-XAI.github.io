@@ -1,7 +1,7 @@
 # Refonte des créneaux de disponibilité — Design
 
 **Date :** 2026-06-19
-**Contexte :** Le président du jury a indiqué qu'aucune soutenance n'est envisageable avant
+**Contexte :** Le président du jury a indiqué qu'aucune soutenance n'est envisageable avant 
 le **20 juillet 2026**, et la faculté est **fermée du 25 juillet au 17 août 2026**. Le système
 de recueil de disponibilités du site de soutenance doit être entièrement reconfiguré pour
 proposer au jury deux fenêtres hiérarchisées.
