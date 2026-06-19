@@ -8,7 +8,7 @@ test('accueil FR : hero, créneau privilégié, sélection et récapitulatif', a
   const preferredSlots = page.locator('.slot--reco');
   await expect(preferredSlots).toHaveCount(2);
   const slot = page.getByRole('button', {
-    name: 'Mardi 7 juillet 2026, 9 h–11 h, Recommandé car déjà confirmé par un membre du jury.',
+    name: 'Lundi 20 juillet 2026, 9 h–11 h, Créneau à privilégier pour réunir tout le monde plus vite.',
   });
   await slot.scrollIntoViewIfNeeded();
   // L'îlot React est hydraté en client:visible : on attend le raccord client avant le clic.
@@ -21,7 +21,7 @@ test('accueil FR : hero, créneau privilégié, sélection et récapitulatif', a
   // Attend l'hydratation + le toggle avant de vérifier le récapitulatif.
   await expect(slot).toHaveAttribute('aria-pressed', 'true');
   // Le récapitulatif liste le créneau choisi (date complète, unique au résumé).
-  await expect(page.locator('[aria-live="polite"]').getByText(/Mardi 7 juillet 2026/)).toBeVisible();
+  await expect(page.locator('[aria-live="polite"]').getByText(/Lundi 20 juillet 2026/)).toBeVisible();
 });
 
 test('bascule de langue FR → EN', async ({ page }) => {
