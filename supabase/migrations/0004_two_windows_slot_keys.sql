@@ -86,4 +86,33 @@ update public.rsvp_counters
        updated_at     = now()
  where id = 1;
 
+-- ---------------------------------------------------------------------
+-- 5. Passage des caps de cardinalité de 20 à 40.
+--    La grille compte désormais deux fenêtres × 5 jours × 4 slots = 40 clés.
+--    Deux endroits dans 0001 plafonnaient à 20 et doivent être mis à jour :
+--      a) la CHECK constraint de table sur disponibilites.creneaux
+--      b) la politique RLS anon_insert_disponibilites (WITH CHECK)
+-- ---------------------------------------------------------------------
+
+-- 5a. Contrainte CHECK de table (drop + re-add, pas d'ALTER CHECK en place).
+alter table public.disponibilites
+  drop constraint disponibilites_creneaux_card_chk,
+  add  constraint disponibilites_creneaux_card_chk
+    check (cardinality(creneaux) between 0 and 40);
+
+-- 5b. Politique RLS INSERT anon (corps reproduit à l'identique depuis 0001,
+--     seule la ligne cardinality passe de 20 à 40).
+drop policy if exists "anon_insert_disponibilites" on public.disponibilites;
+create policy "anon_insert_disponibilites"
+  on public.disponibilites
+  for insert
+  to anon
+  with check (
+    role in ('jury','invite')
+    and char_length(nom) between 1 and 120
+    and (commentaire is null or char_length(commentaire) <= 1000)
+    and cardinality(creneaux) between 0 and 40
+    and creneaux <@ app_private.valid_slot_keys()
+  );
+
 commit;
