@@ -9,10 +9,11 @@ import {
   type AdminRsvp,
 } from '@/lib/availability';
 import { fetchAdminModuleResponses, type AdminModuleResponse } from '@/lib/insights';
-import { MODULES, moduleById, type ModuleDef } from '@/config/modules';
+import { MODULES, moduleById, type Axis, type ModuleDef } from '@/config/modules';
 import {
   distribution,
-  slidersAverages,
+  familiarityAverages,
+  histogram,
   type ModuleAnswerCount,
 } from '@/lib/insightsAggregation';
 import { describeSlot } from '@/lib/mailtoFallback';
@@ -43,10 +44,13 @@ function presenceLabel(presence: AdminRsvp['presence'], t: Dict): string {
 /** Forme commune (superset) de la copy localisée d'un module. */
 interface ModuleCopy {
   q: string;
-  opt?: Record<string, string>;
-  item?: Record<string, string>;
+  unit?: string;
+  poleLeft?: string;
+  poleRight?: string;
+  options?: Record<string, string>;
+  items?: Record<string, string>;
+  categories?: Record<string, string>;
   reveal?: string;
-  placeholder?: string;
 }
 
 /** Copy localisée d'un module (question/options/items/reveal). */
@@ -59,32 +63,76 @@ function moduleTitle(t: Dict, moduleId: string): string {
   return (moduleCopy(t, moduleId)?.q as string) ?? moduleId;
 }
 
-/** Libellé lisible d'une réponse nominative (clés d'options ou texte libre). */
+/** Ordre canonique des axes pour la cartographie. */
+const AXES: Axis[] = ['langage', 'diagnostic', 'suivi', 'explicabilite'];
+
+/** Libellé lisible d'un axe via les clés i18n axisLangage, axisDiagnostic, etc. */
+function axisLabel(axis: Axis, t: Dict): string {
+  const map: Record<Axis, string> = {
+    langage: t.insights.axisLangage,
+    diagnostic: t.insights.axisDiagnostic,
+    suivi: t.insights.axisSuivi,
+    explicabilite: t.insights.axisExplicabilite,
+  };
+  return map[axis];
+}
+
+/** Libellé lisible d'un rôle de répondant (jury, proche, curieux, anonyme). */
+function respondentRoleLabel(role: string | null, t: Dict): string {
+  switch (role) {
+    case 'jury':
+      return t.insights.roleJury;
+    case 'proche':
+      return t.insights.roleProche;
+    case 'curieux':
+      return t.insights.roleCurieux;
+    default:
+      return t.insights.roleAnon;
+  }
+}
+
+/** Libellé lisible d'une réponse nominative selon le type de module. */
 function answerLabel(t: Dict, r: AdminModuleResponse): string {
   const copy = moduleCopy(t, r.module_id);
   const def = moduleById(r.module_id);
-  if (r.answer_text) return r.answer_text;
   if (!def) return r.answer_keys.join(', ');
-  if (def.type === 'sliders') {
-    return r.answer_keys
-      .map((k) => {
-        const [item, bucket] = k.split(':');
-        return `${(copy?.item?.[item] as string) ?? item} : ${bucket}/10`;
-      })
-      .join(' · ');
+  switch (def.type) {
+    case 'estimation': {
+      const v = r.answer_keys[0];
+      const unit = copy?.unit ? ` ${copy.unit}` : '';
+      return v != null ? `${v}${unit}` : t.admin.noValue;
+    }
+    case 'positioning': {
+      const bucket = Number(r.answer_keys[0]);
+      return Number.isNaN(bucket) ? t.admin.noValue : `${bucket * 10}%`;
+    }
+    case 'single':
+      return r.answer_keys.map((k) => copy?.options?.[k] ?? k).join(', ');
+    case 'familiarity':
+      return r.answer_keys
+        .map((k) => {
+          const [item, level] = k.split(':');
+          return `${copy?.items?.[item] ?? item} : ${level}`;
+        })
+        .join(' · ');
+    case 'concept-map':
+      return r.answer_keys
+        .map((k) => {
+          const [item, cat] = k.split(':');
+          return `${copy?.items?.[item] ?? item} = ${copy?.categories?.[cat] ?? cat}`;
+        })
+        .join(' · ');
+    default:
+      return r.answer_keys.join(', ');
   }
-  if (def.type === 'slider') {
-    const bucket = Number(r.answer_keys[0]);
-    return Number.isNaN(bucket) ? '—' : `${bucket * 10}/${def.sliderMax ?? 100}`;
-  }
-  return r.answer_keys.map((k) => (copy?.opt?.[k] as string) ?? k).join(', ');
 }
 
 /**
- * Convertit les réponses nominatives jury en compteurs agrégés locaux,
- * pour réutiliser `distribution`/`slidersAverages` (pool jury, jamais le pool public).
+ * Convertit les réponses nominatives en compteurs agrégés locaux, pour réutiliser
+ * `distribution`, `histogram`, `familiarityAverages` sur un sous-pool donné
+ * (jury seul, ou l'ensemble), jamais le pool public temps réel.
  */
-function juryCounts(responses: AdminModuleResponse[]): ModuleAnswerCount[] {
+function countsFromResponses(responses: AdminModuleResponse[]): ModuleAnswerCount[] {
   const acc = new Map<string, ModuleAnswerCount>();
   for (const r of responses) {
     for (const key of r.answer_keys) {
@@ -120,29 +168,36 @@ export default function AdminPanel({ lang }: Props) {
     [rsvp],
   );
 
-  // Regroupement des réponses insights par membre du jury (pour la restitution).
+  // Réponses du jury, regroupées par membre (restitution nominative).
+  const juryResponses = useMemo(
+    () => moduleResponses.filter((r) => r.role === 'jury' && r.respondent),
+    [moduleResponses],
+  );
   const responsesByMember = useMemo(() => {
     const map = new Map<string, AdminModuleResponse[]>();
-    for (const r of moduleResponses) {
+    for (const r of juryResponses) {
       const name = r.respondent ?? t.admin.noValue;
       const list = map.get(name);
       if (list) list.push(r);
       else map.set(name, [r]);
     }
     return [...map.entries()];
-  }, [moduleResponses, t.admin.noValue]);
+  }, [juryResponses, t.admin.noValue]);
 
-  // Compteurs locaux (pool jury) pour distribution/moyennes par module.
-  const juryAggregates = useMemo(() => juryCounts(moduleResponses), [moduleResponses]);
+  // Compteurs locaux (tous rôles confondus) pour la cartographie par axe.
+  const allAggregates = useMemo(() => countsFromResponses(moduleResponses), [moduleResponses]);
 
-  // Réponses ouvertes (modules de type 'open') in extenso.
-  const openResponses = useMemo(
-    () =>
-      moduleResponses.filter(
-        (r) => moduleById(r.module_id)?.type === 'open' && (r.answer_text ?? '').trim(),
-      ),
-    [moduleResponses],
-  );
+  // Répartition des réponses par rôle de répondant (jury, proche, curieux, anonyme).
+  const roleBreakdown = useMemo(() => {
+    const counter = new Map<string, number>();
+    for (const r of moduleResponses) {
+      const key = r.role ?? 'anon';
+      counter.set(key, (counter.get(key) ?? 0) + 1);
+    }
+    return ['jury', 'proche', 'curieux', 'anon']
+      .map((role) => ({ role, n: counter.get(role) ?? 0 }))
+      .filter((row) => row.n > 0);
+  }, [moduleResponses]);
 
   async function loadResults(passwordForRequest = password) {
     if (!hasSupabase) {
@@ -374,127 +429,100 @@ export default function AdminPanel({ lang }: Props) {
                   </section>
                 </div>
 
-                {/* Insights jury : par membre, par module, réponses ouvertes. */}
+                {/* Cartographie de sensibilisation : par axe, plus détail jury. */}
                 <section className="mt-8 border-t border-line pt-7">
-                  <h3 className="mb-4 font-display text-xl text-ink-900">
-                    {t.admin.insightsTitle}
+                  <h3 className="mb-1 font-display text-xl text-ink-900">
+                    {t.admin.cartographie}
                   </h3>
+                  <p className="mb-4 text-sm text-ink-500">{t.admin.cartographieLead}</p>
 
                   {moduleResponses.length === 0 ? (
                     <p className="rounded-xl border border-line bg-paper p-4 text-sm text-ink-500">
                       {status === 'loading' ? t.admin.loading : t.admin.noInsights}
                     </p>
                   ) : (
-                    <div className="grid gap-6 lg:grid-cols-2">
-                      {/* Par membre */}
+                    <div className="space-y-7">
+                      {/* Répartition par rôle de répondant */}
                       <div>
                         <h4 className="mb-3 font-mono text-xs uppercase tracking-wider text-ink-500">
-                          {t.admin.byMember}
+                          {t.admin.byRole}
                         </h4>
-                        <div className="space-y-3">
-                          {responsesByMember.map(([member, rows]) => (
-                            <article
-                              key={member}
-                              className="rounded-xl border border-line bg-[#FBFDFF] p-4"
+                        <div className="flex flex-wrap gap-3 text-sm">
+                          {roleBreakdown.map((row) => (
+                            <span
+                              key={row.role}
+                              className="rounded-xl border border-line bg-[#FBFDFF] px-4 py-2"
                             >
-                              <h5 className="font-semibold text-ink-900">{member}</h5>
-                              <dl className="mt-3 space-y-2 text-sm">
-                                {rows.map((r) => (
-                                  <div key={`${member}-${r.module_id}-${r.created_at}`}>
-                                    <dt className="text-xs text-ink-400">
-                                      {moduleTitle(t, r.module_id)}
-                                    </dt>
-                                    <dd className="text-ink-700">{answerLabel(t, r)}</dd>
-                                  </div>
-                                ))}
-                              </dl>
-                            </article>
+                              <span className="text-ink-700">
+                                {respondentRoleLabel(row.role === 'anon' ? null : row.role, t)}
+                              </span>
+                              <span className="ml-2 font-mono text-xs text-ink-500">{row.n}</span>
+                            </span>
                           ))}
                         </div>
                       </div>
 
-                      {/* Par module */}
+                      {/* Cartographie par axe */}
                       <div>
                         <h4 className="mb-3 font-mono text-xs uppercase tracking-wider text-ink-500">
-                          {t.admin.byModule}
+                          {t.admin.byAxis}
                         </h4>
-                        <div className="space-y-3">
-                          {MODULES.filter((m) =>
-                            moduleResponses.some((r) => r.module_id === m.id),
-                          ).map((m: ModuleDef) => {
-                            const copy = moduleCopy(t, m.id);
+                        <div className="grid gap-4 lg:grid-cols-2">
+                          {AXES.map((axis) => {
+                            const axisModules = MODULES.filter(
+                              (m) =>
+                                m.axis === axis &&
+                                moduleResponses.some((r) => r.module_id === m.id),
+                            );
+                            if (axisModules.length === 0) return null;
                             return (
                               <article
-                                key={m.id}
+                                key={axis}
                                 className="rounded-xl border border-line bg-[#FBFDFF] p-4"
                               >
-                                <h5 className="text-sm font-semibold text-ink-900">
-                                  {moduleTitle(t, m.id)}
+                                <h5 className="font-display text-base text-ink-900">
+                                  {axisLabel(axis, t)}
                                 </h5>
-                                {m.type === 'sliders' ? (
-                                  <ul className="mt-3 space-y-1.5 text-sm text-ink-700">
-                                    {Object.entries(
-                                      slidersAverages(
-                                        juryAggregates,
-                                        m.id,
-                                        (m.items ?? []).map((it) => it.key),
-                                      ),
-                                    ).map(([item, avg]) => (
-                                      <li key={item} className="flex justify-between gap-3">
-                                        <span>{(copy?.item?.[item] as string) ?? item}</span>
-                                        <span className="font-mono text-xs text-ink-500">
-                                          {avg != null ? `${avg.toFixed(1)}/10` : t.admin.noValue}
-                                        </span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                ) : m.options && m.options.length ? (
-                                  <ul className="mt-3 space-y-1.5 text-sm text-ink-700">
-                                    {distribution(
-                                      juryAggregates,
-                                      m.id,
-                                      m.options.map((o) => o.key),
-                                    ).map((s) => (
-                                      <li key={s.key} className="flex justify-between gap-3">
-                                        <span>{(copy?.opt?.[s.key] as string) ?? s.key}</span>
-                                        <span className="font-mono text-xs text-ink-500">
-                                          {s.n} · {s.pct}%
-                                        </span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                ) : (
-                                  <p className="mt-2 text-xs text-ink-400">{t.admin.noValue}</p>
-                                )}
+                                <div className="mt-3 space-y-4">
+                                  {axisModules.map((m: ModuleDef) => (
+                                    <ModuleDistribution
+                                      key={m.id}
+                                      def={m}
+                                      copy={moduleCopy(t, m.id)}
+                                      counts={allAggregates}
+                                      t={t}
+                                    />
+                                  ))}
+                                </div>
                               </article>
                             );
                           })}
                         </div>
                       </div>
 
-                      {/* Réponses ouvertes */}
-                      {openResponses.length > 0 && (
-                        <div className="lg:col-span-2">
+                      {/* Détail nominatif jury */}
+                      {responsesByMember.length > 0 && (
+                        <div>
                           <h4 className="mb-3 font-mono text-xs uppercase tracking-wider text-ink-500">
-                            {t.admin.openAnswers}
+                            {t.admin.juryDetail}
                           </h4>
-                          <div className="space-y-3">
-                            {openResponses.map((r) => (
+                          <div className="grid gap-3 lg:grid-cols-2">
+                            {responsesByMember.map(([member, rows]) => (
                               <article
-                                key={`open-${r.respondent}-${r.created_at}`}
+                                key={member}
                                 className="rounded-xl border border-line bg-[#FBFDFF] p-4"
                               >
-                                <div className="flex items-start justify-between gap-3">
-                                  <h5 className="font-semibold text-ink-900">
-                                    {r.respondent ?? t.admin.noValue}
-                                  </h5>
-                                  <time className="font-mono text-[0.68rem] text-ink-400">
-                                    {formatSubmittedAt(r.created_at, lang)}
-                                  </time>
-                                </div>
-                                <p className="mt-2 text-sm italic text-ink-700">
-                                  « {r.answer_text} »
-                                </p>
+                                <h5 className="font-semibold text-ink-900">{member}</h5>
+                                <dl className="mt-3 space-y-2 text-sm">
+                                  {rows.map((r) => (
+                                    <div key={`${member}-${r.module_id}-${r.created_at}`}>
+                                      <dt className="text-xs text-ink-400">
+                                        {moduleTitle(t, r.module_id)}
+                                      </dt>
+                                      <dd className="text-ink-700">{answerLabel(t, r)}</dd>
+                                    </div>
+                                  ))}
+                                </dl>
                               </article>
                             ))}
                           </div>
@@ -510,4 +538,163 @@ export default function AdminPanel({ lang }: Props) {
       )}
     </>
   );
+}
+
+interface ModuleDistributionProps {
+  def: ModuleDef;
+  copy: ModuleCopy | undefined;
+  counts: ModuleAnswerCount[];
+  t: Dict;
+}
+
+/**
+ * Distribution d'un module pour la cartographie admin, selon son type :
+ * estimation (histogramme sobre par tranches), positionnement (moyenne 0..100),
+ * choix unique (répartition par option), familiarité (moyenne par notion),
+ * concept-map (taux de bonne association au regard du mapping de référence).
+ */
+function ModuleDistribution({ def, copy, counts, t }: ModuleDistributionProps) {
+  const title = (copy?.q as string) ?? def.id;
+
+  if (def.type === 'estimation' && def.estimation) {
+    const cfg = def.estimation;
+    const span = cfg.max - cfg.min;
+    const binSize = Math.max(cfg.step, Math.round(span / 10) || cfg.step);
+    const bins = histogram(counts, def.id, { min: cfg.min, max: cfg.max, binSize });
+    const maxN = bins.reduce((m, b) => Math.max(m, b.n), 0) || 1;
+    const unit = copy?.unit ? ` ${copy.unit}` : '';
+    return (
+      <div>
+        <p className="text-sm font-medium text-ink-700">{title}</p>
+        <p className="mt-1 font-mono text-[0.7rem] text-ink-400">
+          {t.insights.evidence} : {cfg.reference}
+          {unit}
+        </p>
+        <ul className="mt-2 space-y-1">
+          {bins.map((b) => (
+            <li key={b.start} className="flex items-center gap-2 text-xs text-ink-600">
+              <span className="w-16 flex-none font-mono text-ink-500">
+                {b.start}
+                {'–'}
+                {b.end}
+              </span>
+              <span className="h-2 flex-1 overflow-hidden rounded-full bg-line">
+                <span
+                  className="block h-full rounded-full bg-gradient-to-r from-clinical-500 to-clinical-400"
+                  style={{ width: `${Math.round((b.n / maxN) * 100)}%` }}
+                />
+              </span>
+              <span className="w-6 flex-none text-right font-mono text-ink-500">{b.n}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  if (def.type === 'positioning') {
+    const rows = counts.filter((c) => c.module_id === def.id);
+    let weighted = 0;
+    let total = 0;
+    for (const r of rows) {
+      const v = Number(r.answer_key);
+      if (!Number.isNaN(v)) {
+        weighted += v * r.n;
+        total += r.n;
+      }
+    }
+    const avgPct = total > 0 ? Math.round((weighted / total) * 10) : null;
+    return (
+      <div>
+        <p className="text-sm font-medium text-ink-700">{title}</p>
+        <div className="mt-2 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-wider text-ink-400">
+          <span>{copy?.poleLeft ?? ''}</span>
+          <span>{copy?.poleRight ?? ''}</span>
+        </div>
+        <div className="relative mt-1 h-2 w-full rounded-full bg-line">
+          {avgPct != null && (
+            <span
+              className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-teal-500 shadow"
+              style={{ left: `${avgPct}%` }}
+            />
+          )}
+        </div>
+        <p className="mt-1 font-mono text-[0.7rem] text-ink-500">
+          {avgPct != null ? `${avgPct}%` : t.admin.noValue}
+        </p>
+      </div>
+    );
+  }
+
+  if (def.type === 'single' && def.options) {
+    const shares = distribution(
+      counts,
+      def.id,
+      def.options.map((o) => o.key),
+    );
+    return (
+      <div>
+        <p className="text-sm font-medium text-ink-700">{title}</p>
+        <ul className="mt-2 space-y-1.5 text-sm text-ink-700">
+          {shares.map((s) => (
+            <li key={s.key} className="flex justify-between gap-3">
+              <span>{copy?.options?.[s.key] ?? s.key}</span>
+              <span className="font-mono text-xs text-ink-500">
+                {s.n} · {s.pct}%
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  if (def.type === 'familiarity' && def.familiarity) {
+    const items = def.familiarity.items.map((it) => it.key);
+    const averages = familiarityAverages(counts, def.id, items);
+    return (
+      <div>
+        <p className="text-sm font-medium text-ink-700">{title}</p>
+        <ul className="mt-2 space-y-1.5 text-sm text-ink-700">
+          {items.map((item) => {
+            const avg = averages[item];
+            return (
+              <li key={item} className="flex justify-between gap-3">
+                <span>{copy?.items?.[item] ?? item}</span>
+                <span className="font-mono text-xs text-ink-500">
+                  {avg != null
+                    ? `${avg.toFixed(1)}/${def.familiarity?.scale ?? 5}`
+                    : t.admin.noValue}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+
+  if (def.type === 'concept-map' && def.conceptMap) {
+    const mapping = def.conceptMap.mapping;
+    const rows = counts.filter((c) => c.module_id === def.id);
+    let correct = 0;
+    let total = 0;
+    for (const r of rows) {
+      const [item, cat] = r.answer_key.split(':');
+      if (!item || !cat) continue;
+      total += r.n;
+      if (mapping[item] === cat) correct += r.n;
+    }
+    const pct = total > 0 ? Math.round((100 * correct) / total) : null;
+    return (
+      <div>
+        <p className="text-sm font-medium text-ink-700">{title}</p>
+        <p className="mt-2 font-mono text-xs text-ink-500">
+          {t.admin.conceptAccuracy} : {pct != null ? `${pct}%` : t.admin.noValue}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
 }

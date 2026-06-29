@@ -1,18 +1,15 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Jury from '@/components/pages/Jury.astro';
-import { useTranslations } from '@/i18n';
-
-const lang = 'en' as const;
-const t = useTranslations(lang);
+// The /en/jury page redirects instantly to the home page (unified section).
 ---
-
-<BaseLayout
-  title={t.meta.juryTitle}
-  description={t.meta.juryDescription}
-  lang={lang}
-  path="/jury"
-  noindex
->
-  <Jury lang={lang} path="/jury" />
-</BaseLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=/en/" />
+    <link rel="canonical" href="/en/" />
+    <meta name="robots" content="noindex" />
+    <title>Redirecting to home</title>
+    <script is:inline>location.replace('/en/');</script>
+  </head>
+  <body></body>
+</html>
