@@ -129,7 +129,11 @@ export const SITE = {
    * Date verrouillée de la soutenance. `null` tant qu'elle n'est pas fixée.
    * Quand connue : { startISO: '2026-07-20T09:00:00', durationMin: 120, room: 'Amphi A' }.
    */
-  defenseDate: null as null | { startISO: string; durationMin: number; room?: string },
+  defenseDate: {
+    startISO: '2026-07-22T14:00:00',
+    durationMin: 120,
+    room: 'Salle des thèses',
+  } as null | { startISO: string; durationMin: number; room?: string },
 
   /** Composition du jury (référence ; affichée le jour J seulement). */
   jury: [
