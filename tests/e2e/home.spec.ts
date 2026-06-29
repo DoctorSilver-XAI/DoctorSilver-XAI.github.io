@@ -1,27 +1,17 @@
 import { test, expect } from '@playwright/test';
 
-test('accueil FR : hero, créneau privilégié, sélection et récapitulatif', async ({ page }) => {
+test('accueil FR : hero, date confirmée, section insights', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ouvrir la boîte noire.');
 
-  // Les créneaux privilégiés portent la classe .slot--reco.
-  const preferredSlots = page.locator('.slot--reco');
-  await expect(preferredSlots).toHaveCount(2);
-  const slot = page.getByRole('button', {
-    name: 'Lundi 20 juillet 2026, 9 h–11 h, Créneau à privilégier pour réunir tout le monde plus vite.',
-  });
-  await slot.scrollIntoViewIfNeeded();
-  // L'îlot React est hydraté en client:visible : on attend le raccord client avant le clic.
-  await page.waitForTimeout(1000);
-  await expect(slot).toBeVisible();
-  await expect(page.locator('.slot__badge')).toHaveCount(2);
+  // La date confirmée apparaît dans la section JourJ (#soutenance).
+  const jourj = page.locator('#soutenance');
+  await expect(jourj).toBeVisible();
+  await expect(jourj.getByText('Mercredi 22 juillet 2026', { exact: true })).toBeVisible();
+  await expect(jourj.getByText('Salle des thèses', { exact: true })).toBeVisible();
 
-  await expect(slot).toHaveAttribute('aria-pressed', 'false');
-  await slot.click();
-  // Attend l'hydratation + le toggle avant de vérifier le récapitulatif.
-  await expect(slot).toHaveAttribute('aria-pressed', 'true');
-  // Le récapitulatif liste le créneau choisi (date complète, unique au résumé).
-  await expect(page.locator('[aria-live="polite"]').getByText(/Lundi 20 juillet 2026/)).toBeVisible();
+  // La section insights publique est présente.
+  await expect(page.locator('#insights')).toBeVisible();
 });
 
 test('bascule de langue FR → EN', async ({ page }) => {
@@ -29,4 +19,22 @@ test('bascule de langue FR → EN', async ({ page }) => {
   await page.getByRole('link', { name: 'EN', exact: true }).click();
   await page.waitForURL(/\/en\/?$/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Opening the black box.');
+});
+
+test('module insight public : répondre révèle le fait', async ({ page }) => {
+  await page.goto('/');
+  const insights = page.locator('#insights');
+  await insights.scrollIntoViewIfNeeded();
+  // L'îlot React est hydraté en client:visible : attendre le raccord client.
+  await page.waitForTimeout(1000);
+
+  // Répondre au 1er module à choix (estimate) : sélectionner une option…
+  const firstOption = insights.locator('fieldset button').first();
+  await expect(firstOption).toBeVisible();
+  await firstOption.click();
+
+  // …puis valider ; la révélation pédagogique s'affiche.
+  const submit = insights.getByTestId('insight-submit');
+  await submit.click();
+  await expect(insights.getByTestId('insight-reveal')).toBeVisible();
 });
