@@ -16,7 +16,7 @@ export const fr = {
 
   nav: {
     brand: 'Soutenance · ISPB',
-    availability: 'Disponibilités',
+    defense: 'La soutenance',
     rsvp: 'Je viendrai',
     language: 'Langue',
     fr: 'FR',
@@ -31,9 +31,12 @@ export const fr = {
       'IA explicable et de confiance dans le diagnostic, le suivi personnalisé et l’optimisation thérapeutique du TDAH et du trouble bipolaire : un cadre translationnel pour l’exercice pharmaceutique.',
     intrigue:
       'En juillet 2026, à l’ISPB : ce qu’une revue PRISMA de 46 études récentes dit de l’IA en neuropsychiatrie, et la place du pharmacien dans cette transition.',
-    cta: 'Indiquer mes disponibilités',
-    ctaHint: 'Quelques secondes, par e-mail ou en un clic',
+    cta: 'Voir la date & l’accès',
+    ctaHint: 'Tout pour nous rejoindre le jour J',
     scrollCue: 'Découvrir',
+    dateConfirmed: 'Date confirmée',
+    dateValue: 'Mercredi 22 juillet 2026 · 14 h',
+    dateRoom: 'Salle des thèses · ISPB Lyon',
   },
 
   story: {
@@ -163,6 +166,11 @@ export const fr = {
     preferredSlot: 'Créneau préféré',
     email: 'E-mail',
     submittedAt: 'Envoyé le',
+    insightsTitle: 'Insights jury',
+    byMember: 'Par membre',
+    byModule: 'Par module',
+    openAnswers: 'Réponses ouvertes',
+    noInsights: 'Aucun insight pour le moment.',
     noValue: '—',
   },
 
@@ -197,12 +205,134 @@ export const fr = {
     eyebrow: 'Le jour J',
     heading: 'Rendez-vous le jour de la soutenance.',
     leadTba:
-      'La date exacte sera fixée dès que les disponibilités du jury seront connues. Indiquez les vôtres pour la verrouiller au plus vite.',
+      'La date exacte sera fixée dès que les disponibilités du jury seront connues.',
     lead: 'Tout ce qu’il faut savoir pour nous rejoindre.',
+    dateLabel: 'Date',
+    timeLabel: 'Horaire',
+    roomLabel: 'Salle',
     addToCalendar: 'Ajouter à mon agenda',
+    icsTitle: 'Soutenance de thèse — Pierre Gil (ISPB Lyon)',
     programTitle: 'Déroulé',
     accessTitle: 'Accès',
     addressLabel: 'Adresse',
+    confirmedBy: 'Date officiellement validée par le service des thèses de l’ISPB.',
+  },
+
+  insights: {
+    // En-tête de section
+    eyebrowPublic: 'Testez votre intuition',
+    eyebrowJury: 'En amont de la soutenance',
+    headingPublic: 'L’IA en santé mentale : ce que vous en savez (déjà).',
+    headingJury: 'Votre regard m’intéresse.',
+    introPublic:
+      'Quelques questions courtes, sans bonne ni mauvaise réponse, pour explorer ensemble une période charnière : celle où l’IA reconfigure le diagnostic et le soin en santé mentale.',
+    introJury:
+      'Nous vivons un moment charnière : l’IA redessine le diagnostic, le suivi et l’optimisation thérapeutique en neuropsychiatrie. Ces quelques modules — sans note ni piège — m’aident à calibrer mon propos le jour J et à préparer les bonnes démonstrations. Le pharmacien, vous le verrez, s’y révèle au cœur de la santé de demain.',
+    // Parcours / navigation
+    actLabel: 'Acte',
+    act1: 'Vos repères',
+    act2: 'Ce que l’IA sait déjà faire',
+    act3: 'L’explicabilité, condition de la confiance',
+    act4: 'Quelle médecine, quelle société — et quel rôle pour le pharmacien ?',
+    progress: 'Module {n} sur {total}',
+    identityLabel: 'Vous êtes',
+    identityPlaceholder: 'Sélectionnez votre nom',
+    next: 'Suivant',
+    finish: 'Terminer',
+    submit: 'Valider ma réponse',
+    skip: 'Passer',
+    answered: 'Déjà répondu ✓',
+    thanksTitle: 'Merci !',
+    thanksBody: 'Vos réponses m’aideront à préparer une soutenance à votre hauteur. À très bientôt.',
+    revealLabel: 'À retenir',
+    youAnswered: 'Votre réponse',
+    distributionLabel: 'Les autres ont répondu',
+    noData: 'Soyez le premier à répondre.',
+    demoNotice: 'Mode démonstration : vos réponses ne sont pas enregistrées ici.',
+    sliderLeft: 'Substitution',
+    sliderRight: 'Augmentation',
+    familiarityLow: 'Pas du tout',
+    familiarityHigh: 'Très à l’aise',
+    privacyJury:
+      'Vos réponses sont nominatives mais privées : elles ne servent qu’à préparer la soutenance et ne sont jamais affichées publiquement.',
+    // Modules — un objet par module, clés alignées sur src/config/modules.ts
+    modules: {
+      'interet-global': {
+        q: 'Ce qui vous intéresse le plus dans ce travail ?',
+        opt: {
+          'methodes-xai': 'Les méthodes d’IA et leur explicabilité',
+          clinique: 'Les applications cliniques concrètes',
+          paradigme: 'Le changement de paradigme (dépistage précoce, prévention, personnalisation)',
+          'ethique-societe': 'Les enjeux éthiques et de société',
+          pharmacien: 'Le rôle du pharmacien',
+          'medico-eco': 'L’impact médico-économique',
+        },
+        reveal: 'Ce repère m’aide à hiérarchiser mon temps de parole le jour J.',
+      },
+      'familiarite-ia': {
+        q: 'À quel point ces notions vous sont-elles familières ?',
+        item: {
+          ml: 'Machine Learning',
+          reseaux: 'Réseaux de neurones',
+          shap: 'SHAP / LIME (explicabilité)',
+          nlp: 'NLP (analyse du langage)',
+          pgx: 'Pharmacogénomique',
+        },
+        reveal: 'Merci : je calibrerai mon niveau d’explication en conséquence.',
+      },
+      'pepite-arn': {
+        q: 'Un simple panel sanguin (édition de l’ARN) distingue le trouble bipolaire d’une dépression unipolaire. Selon vous, avec quelle performance (AUC) ?',
+        opt: { a: '≈ 0,55 (à peine mieux que le hasard)', b: '≈ 0,70', c: '> 0,90', d: '= 1,0 (parfait)' },
+        reveal:
+          'AUC > 0,90 (Salvetat) — on « lit le cerveau dans le sang » via des cellules circulantes. Proche d’un test compagnon, là où l’imagerie plafonne.',
+      },
+      'promesse-bipolaire': {
+        q: 'Aujourd’hui, combien d’années s’écoulent en moyenne entre le 1er épisode et le diagnostic de trouble bipolaire ?',
+        opt: { a: '≈ 2 ans', b: '≈ 5 ans', c: '≈ 9 ans', d: '≈ 15 ans' },
+        reveal:
+          '≈ 9 ans (Keramatian). C’est précisément cette errance que le dépistage précoce assisté par IA pourrait raccourcir.',
+      },
+      'pepite-polypharmacie': {
+        q: 'Vrai ou faux : ajouter un antipsychotique à un thymorégulateur réduit toujours la mortalité dans le trouble bipolaire.',
+        opt: { vrai: 'Vrai', faux: 'Faux' },
+        reveal:
+          'Faux : chez les patients à faible risque vital, cette association augmente la mortalité (HR 1,50, Lieslehto). La polypharmacie n’est bénéfique que ciblée.',
+      },
+      'xai-verrou': {
+        q: 'Selon vous, qu’est-ce qui freine le plus l’adoption clinique de l’IA ?',
+        opt: { performance: 'Une performance insuffisante', explicabilite: 'Le manque d’explicabilité et de confiance', cout: 'Le coût', reglementation: 'La réglementation' },
+        reveal:
+          'La thèse défend l’explicabilité comme verrou principal (hypothèse H3) : c’est elle, plus que la performance brute, qui conditionne la confiance et l’usage.',
+      },
+      'pepite-auc': {
+        q: 'Vrai ou faux : un modèle peut afficher une excellente AUC tout en étant presque incapable de détecter les vrais malades.',
+        opt: { vrai: 'Vrai', faux: 'Faux' },
+        reveal:
+          'Vrai : sensibilité ≈ 1,7 % malgré une AUC correcte (Huynh). « Ne jamais lire une AUC seule » — d’où l’exigence de rigueur et d’explicabilité.',
+      },
+      'opinion-aug-sub': {
+        q: 'Pour vous, l’IA en neuropsychiatrie relève surtout de…',
+        reveal:
+          'La thèse défend fermement l’augmentation du clinicien (et du patient), jamais la substitution.',
+      },
+      'enjeux-humain': {
+        q: 'Le plus grand risque sociétal d’une IA mal encadrée en santé mentale ?',
+        opt: { attention: 'La marchandisation de l’attention', autonomie: 'La perte d’autonomie et de libre arbitre', inegalites: 'Le creusement des inégalités d’accès', deshumanisation: 'La déshumanisation du soin', surveillance: 'La surveillance des données' },
+        reveal:
+          'Il n’y a pas de mauvaise réponse : ces risques sont liés. L’enjeu est de placer le bien-être mental — et non la seule captation de l’attention — au centre de l’innovation.',
+      },
+      'pharmacien-pivot': {
+        q: 'Dans quel maillon le pharmacien sera-t-il le plus décisif pour une IA en santé mentale au service de l’humain ?',
+        opt: { officine: 'À l’officine (1er recours, repérage et accompagnement)', biologie: 'En biologie médicale (co-interprétation des biomarqueurs)', 'rd-industrie': 'En R&D et industrie (médicaments et dispositifs augmentés)', 'reglementation-qualite': 'Dans la réglementation et l’assurance qualité (AI Act, CE/FDA)' },
+        reveal:
+          'La thèse le montre : le pharmacien est présent à tous ces maillons. C’est ce qui en fait l’acteur, le garant incontournable de la santé augmentée de demain.',
+      },
+      'attente-vision': {
+        q: 'En une phrase : à quelle condition l’IA tiendra-t-elle ses promesses en santé mentale sans trahir l’humain ?',
+        placeholder: 'Votre intuition, en quelques mots…',
+        reveal: 'Merci — votre formulation nourrira directement ma conclusion.',
+      },
+    },
   },
 
   footer: {

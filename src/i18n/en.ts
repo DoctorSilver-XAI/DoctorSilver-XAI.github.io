@@ -13,7 +13,7 @@ export const en: Dict = {
 
   nav: {
     brand: 'Defense · ISPB',
-    availability: 'Availability',
+    defense: 'The defense',
     rsvp: 'I’ll attend',
     language: 'Language',
     fr: 'FR',
@@ -28,9 +28,12 @@ export const en: Dict = {
       'Explainable, trustworthy AI for the diagnosis, personalised monitoring and therapeutic optimisation of ADHD and bipolar disorder: a translational framework for pharmacy practice.',
     intrigue:
       'July 2026, at the ISPB: what a PRISMA review of 46 recent studies tells us about AI in neuropsychiatry, and the pharmacist’s place in this shift.',
-    cta: 'Share my availability',
-    ctaHint: 'Takes seconds, by email or in one click',
+    cta: 'See date & venue',
+    ctaHint: 'Everything to join us on defense day',
     scrollCue: 'Discover',
+    dateConfirmed: 'Date confirmed',
+    dateValue: 'Wednesday 22 July 2026 · 2 PM',
+    dateRoom: 'Salle des thèses · ISPB Lyon',
   },
 
   story: {
@@ -157,6 +160,11 @@ export const en: Dict = {
     preferredSlot: 'Preferred slot',
     email: 'Email',
     submittedAt: 'Sent on',
+    insightsTitle: 'Jury insights',
+    byMember: 'By member',
+    byModule: 'By module',
+    openAnswers: 'Open-ended answers',
+    noInsights: 'No insights yet.',
     noValue: '—',
   },
 
@@ -191,12 +199,134 @@ export const en: Dict = {
     eyebrow: 'The day',
     heading: 'See you on defense day.',
     leadTba:
-      'The exact date will be set as soon as the jury’s availability is known. Share yours to lock it in quickly.',
+      'The exact date will be set as soon as the jury’s availability is known.',
     lead: 'Everything you need to join us.',
+    dateLabel: 'Date',
+    timeLabel: 'Time',
+    roomLabel: 'Room',
     addToCalendar: 'Add to my calendar',
+    icsTitle: 'Thesis defense — Pierre Gil (ISPB Lyon)',
     programTitle: 'Schedule',
     accessTitle: 'Getting there',
     addressLabel: 'Address',
+    confirmedBy: 'Date officially confirmed by the ISPB thesis office.',
+  },
+
+  insights: {
+    // Section header
+    eyebrowPublic: 'Test your intuition',
+    eyebrowJury: 'Ahead of the defense',
+    headingPublic: 'AI in mental health: what you (already) know.',
+    headingJury: 'Your perspective matters to me.',
+    introPublic:
+      'A few short questions, with no right or wrong answer, to explore together a pivotal moment: the one where AI is reshaping diagnosis and care in mental health.',
+    introJury:
+      'We are living through a pivotal moment: AI is redrawing diagnosis, monitoring and therapeutic optimisation in neuropsychiatry. These few modules — no grading, no traps — help me calibrate my talk on defense day and prepare the right demonstrations. The pharmacist, as you will see, turns out to be at the heart of tomorrow’s healthcare.',
+    // Journey / navigation
+    actLabel: 'Act',
+    act1: 'Your bearings',
+    act2: 'What AI can already do',
+    act3: 'Explainability, the condition for trust',
+    act4: 'Which medicine, which society — and what role for the pharmacist?',
+    progress: 'Module {n} of {total}',
+    identityLabel: 'You are',
+    identityPlaceholder: 'Select your name',
+    next: 'Next',
+    finish: 'Finish',
+    submit: 'Submit my answer',
+    skip: 'Skip',
+    answered: 'Already answered ✓',
+    thanksTitle: 'Thank you!',
+    thanksBody: 'Your answers will help me prepare a defense worthy of you. See you very soon.',
+    revealLabel: 'Takeaway',
+    youAnswered: 'Your answer',
+    distributionLabel: 'How others answered',
+    noData: 'Be the first to answer.',
+    demoNotice: 'Demo mode: your answers are not saved here.',
+    sliderLeft: 'Substitution',
+    sliderRight: 'Augmentation',
+    familiarityLow: 'Not at all',
+    familiarityHigh: 'Very comfortable',
+    privacyJury:
+      'Your answers are named but private: they are used only to prepare the defense and are never shown publicly.',
+    // Modules — one object per module, keys aligned with src/config/modules.ts
+    modules: {
+      'interet-global': {
+        q: 'What interests you most in this work?',
+        opt: {
+          'methodes-xai': 'AI methods and their explainability',
+          clinique: 'Concrete clinical applications',
+          paradigme: 'The paradigm shift (early screening, prevention, personalisation)',
+          'ethique-societe': 'Ethical and societal stakes',
+          pharmacien: 'The role of the pharmacist',
+          'medico-eco': 'The medico-economic impact',
+        },
+        reveal: 'This cue helps me prioritise my speaking time on defense day.',
+      },
+      'familiarite-ia': {
+        q: 'How familiar are these concepts to you?',
+        item: {
+          ml: 'Machine Learning',
+          reseaux: 'Neural networks',
+          shap: 'SHAP / LIME (explainability)',
+          nlp: 'NLP (language analysis)',
+          pgx: 'Pharmacogenomics',
+        },
+        reveal: 'Thank you: I will calibrate my level of explanation accordingly.',
+      },
+      'pepite-arn': {
+        q: 'A simple blood panel (RNA editing) distinguishes bipolar disorder from unipolar depression. With what performance (AUC), in your view?',
+        opt: { a: '≈ 0.55 (barely better than chance)', b: '≈ 0.70', c: '> 0.90', d: '= 1.0 (perfect)' },
+        reveal:
+          'AUC > 0.90 (Salvetat) — we “read the brain in the blood” via circulating cells. Close to a companion test, where imaging plateaus.',
+      },
+      'promesse-bipolaire': {
+        q: 'Today, how many years pass on average between the first episode and the diagnosis of bipolar disorder?',
+        opt: { a: '≈ 2 years', b: '≈ 5 years', c: '≈ 9 years', d: '≈ 15 years' },
+        reveal:
+          '≈ 9 years (Keramatian). It is precisely this wandering that AI-assisted early screening could shorten.',
+      },
+      'pepite-polypharmacie': {
+        q: 'True or false: adding an antipsychotic to a mood stabiliser always reduces mortality in bipolar disorder.',
+        opt: { vrai: 'True', faux: 'False' },
+        reveal:
+          'False: in patients at low vital risk, this combination increases mortality (HR 1.50, Lieslehto). Polypharmacy is only beneficial when targeted.',
+      },
+      'xai-verrou': {
+        q: 'In your view, what most holds back the clinical adoption of AI?',
+        opt: { performance: 'Insufficient performance', explicabilite: 'The lack of explainability and trust', cout: 'Cost', reglementation: 'Regulation' },
+        reveal:
+          'The thesis argues that explainability is the main bottleneck (hypothesis H3): more than raw performance, it is what conditions trust and use.',
+      },
+      'pepite-auc': {
+        q: 'True or false: a model can show an excellent AUC while being almost unable to detect actual patients.',
+        opt: { vrai: 'True', faux: 'False' },
+        reveal:
+          'True: sensitivity ≈ 1.7% despite a decent AUC (Huynh). “Never read an AUC alone” — hence the demand for rigour and explainability.',
+      },
+      'opinion-aug-sub': {
+        q: 'For you, AI in neuropsychiatry is mainly about…',
+        reveal:
+          'The thesis firmly defends the augmentation of the clinician (and the patient), never substitution.',
+      },
+      'enjeux-humain': {
+        q: 'The greatest societal risk of poorly governed AI in mental health?',
+        opt: { attention: 'The commodification of attention', autonomie: 'The loss of autonomy and free will', inegalites: 'The widening of inequalities in access', deshumanisation: 'The dehumanisation of care', surveillance: 'Data surveillance' },
+        reveal:
+          'There is no wrong answer: these risks are linked. The challenge is to place mental well-being — and not the mere capture of attention — at the centre of innovation.',
+      },
+      'pharmacien-pivot': {
+        q: 'In which link will the pharmacist be most decisive for an AI in mental health that serves people?',
+        opt: { officine: 'In the community pharmacy (first recourse, detection and support)', biologie: 'In medical biology (co-interpretation of biomarkers)', 'rd-industrie': 'In R&D and industry (augmented drugs and devices)', 'reglementation-qualite': 'In regulation and quality assurance (AI Act, CE/FDA)' },
+        reveal:
+          'The thesis shows it: the pharmacist is present at all these links. That is what makes them the essential actor and guarantor of tomorrow’s augmented health.',
+      },
+      'attente-vision': {
+        q: 'In one sentence: under what condition will AI keep its promises in mental health without betraying the human?',
+        placeholder: 'Your intuition, in a few words…',
+        reveal: 'Thank you — your wording will feed directly into my conclusion.',
+      },
+    },
   },
 
   footer: {

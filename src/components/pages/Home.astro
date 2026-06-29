@@ -2,9 +2,10 @@
 import type { Lang } from '@/i18n';
 import Nav from '@/components/nav/Nav.astro';
 import Hero from '@/components/hero/Hero.astro';
+import JourJ from '@/components/jourj/JourJ.astro';
 import Scrollytelling from '@/components/scrollytelling/Scrollytelling.astro';
 import Why from '@/components/why/Why.astro';
-import Vote from '@/components/vote/Vote.astro';
+import InsightsSection from '@/components/insights/InsightsSection.astro';
 import Footer from '@/components/footer/Footer.astro';
 import AdminPanel from '@/components/admin/AdminPanel';
 
@@ -19,9 +20,10 @@ const { lang, path = '/' } = Astro.props;
 <Nav lang={lang} path={path} />
 <Hero lang={lang} />
 <main id="contenu">
+  <JourJ lang={lang} />
   <Scrollytelling lang={lang} />
   <Why lang={lang} />
-  <Vote lang={lang} />
+  <InsightsSection lang={lang} mode="public" />
 </main>
 <Footer lang={lang} />
 <AdminPanel lang={lang} client:load />

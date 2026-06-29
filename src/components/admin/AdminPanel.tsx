@@ -8,6 +8,13 @@ import {
   type AdminDisponibilite,
   type AdminRsvp,
 } from '@/lib/availability';
+import { fetchAdminModuleResponses, type AdminModuleResponse } from '@/lib/insights';
+import { MODULES, moduleById, type ModuleDef } from '@/config/modules';
+import {
+  distribution,
+  slidersAverages,
+  type ModuleAnswerCount,
+} from '@/lib/insightsAggregation';
 import { describeSlot } from '@/lib/mailtoFallback';
 
 interface Props {
@@ -33,6 +40,63 @@ function presenceLabel(presence: AdminRsvp['presence'], t: Dict): string {
   return presence === 'oui' ? t.rsvp.presenceYes : t.rsvp.presenceMaybe;
 }
 
+/** Forme commune (superset) de la copy localisée d'un module. */
+interface ModuleCopy {
+  q: string;
+  opt?: Record<string, string>;
+  item?: Record<string, string>;
+  reveal?: string;
+  placeholder?: string;
+}
+
+/** Copy localisée d'un module (question/options/items/reveal). */
+function moduleCopy(t: Dict, moduleId: string): ModuleCopy | undefined {
+  return (t.insights.modules as Record<string, ModuleCopy>)[moduleId];
+}
+
+/** Titre lisible d'un module = sa question. */
+function moduleTitle(t: Dict, moduleId: string): string {
+  return (moduleCopy(t, moduleId)?.q as string) ?? moduleId;
+}
+
+/** Libellé lisible d'une réponse nominative (clés d'options ou texte libre). */
+function answerLabel(t: Dict, r: AdminModuleResponse): string {
+  const copy = moduleCopy(t, r.module_id);
+  const def = moduleById(r.module_id);
+  if (r.answer_text) return r.answer_text;
+  if (!def) return r.answer_keys.join(', ');
+  if (def.type === 'sliders') {
+    return r.answer_keys
+      .map((k) => {
+        const [item, bucket] = k.split(':');
+        return `${(copy?.item?.[item] as string) ?? item} : ${bucket}/10`;
+      })
+      .join(' · ');
+  }
+  if (def.type === 'slider') {
+    const bucket = Number(r.answer_keys[0]);
+    return Number.isNaN(bucket) ? '—' : `${bucket * 10}/${def.sliderMax ?? 100}`;
+  }
+  return r.answer_keys.map((k) => (copy?.opt?.[k] as string) ?? k).join(', ');
+}
+
+/**
+ * Convertit les réponses nominatives jury en compteurs agrégés locaux,
+ * pour réutiliser `distribution`/`slidersAverages` (pool jury, jamais le pool public).
+ */
+function juryCounts(responses: AdminModuleResponse[]): ModuleAnswerCount[] {
+  const acc = new Map<string, ModuleAnswerCount>();
+  for (const r of responses) {
+    for (const key of r.answer_keys) {
+      const id = `${r.module_id}::${key}`;
+      const existing = acc.get(id);
+      if (existing) existing.n += 1;
+      else acc.set(id, { module_id: r.module_id, answer_key: key, n: 1 });
+    }
+  }
+  return [...acc.values()];
+}
+
 export default function AdminPanel({ lang }: Props) {
   const t = useTranslations(lang);
   const [open, setOpen] = useState(false);
@@ -42,6 +106,7 @@ export default function AdminPanel({ lang }: Props) {
   const [status, setStatus] = useState<Status>('idle');
   const [availability, setAvailability] = useState<AdminDisponibilite[]>([]);
   const [rsvp, setRsvp] = useState<AdminRsvp[]>([]);
+  const [moduleResponses, setModuleResponses] = useState<AdminModuleResponse[]>([]);
 
   const totalSlots = useMemo(
     () => availability.reduce((sum, row) => sum + row.creneaux.length, 0),
@@ -55,6 +120,30 @@ export default function AdminPanel({ lang }: Props) {
     [rsvp],
   );
 
+  // Regroupement des réponses insights par membre du jury (pour la restitution).
+  const responsesByMember = useMemo(() => {
+    const map = new Map<string, AdminModuleResponse[]>();
+    for (const r of moduleResponses) {
+      const name = r.respondent ?? t.admin.noValue;
+      const list = map.get(name);
+      if (list) list.push(r);
+      else map.set(name, [r]);
+    }
+    return [...map.entries()];
+  }, [moduleResponses, t.admin.noValue]);
+
+  // Compteurs locaux (pool jury) pour distribution/moyennes par module.
+  const juryAggregates = useMemo(() => juryCounts(moduleResponses), [moduleResponses]);
+
+  // Réponses ouvertes (modules de type 'open') in extenso.
+  const openResponses = useMemo(
+    () =>
+      moduleResponses.filter(
+        (r) => moduleById(r.module_id)?.type === 'open' && (r.answer_text ?? '').trim(),
+      ),
+    [moduleResponses],
+  );
+
   async function loadResults(passwordForRequest = password) {
     if (!hasSupabase) {
       setStatus('ready');
@@ -62,12 +151,14 @@ export default function AdminPanel({ lang }: Props) {
     }
     setStatus('loading');
     try {
-      const [nextAvailability, nextRsvp] = await Promise.all([
+      const [nextAvailability, nextRsvp, nextModuleResponses] = await Promise.all([
         fetchAdminDisponibilites(passwordForRequest),
         fetchAdminRsvp(passwordForRequest),
+        fetchAdminModuleResponses(passwordForRequest),
       ]);
       setAvailability(nextAvailability);
       setRsvp(nextRsvp);
+      setModuleResponses(nextModuleResponses);
       setStatus('ready');
     } catch {
       setStatus('error');
@@ -282,6 +373,136 @@ export default function AdminPanel({ lang }: Props) {
                     </div>
                   </section>
                 </div>
+
+                {/* Insights jury : par membre, par module, réponses ouvertes. */}
+                <section className="mt-8 border-t border-line pt-7">
+                  <h3 className="mb-4 font-display text-xl text-ink-900">
+                    {t.admin.insightsTitle}
+                  </h3>
+
+                  {moduleResponses.length === 0 ? (
+                    <p className="rounded-xl border border-line bg-paper p-4 text-sm text-ink-500">
+                      {status === 'loading' ? t.admin.loading : t.admin.noInsights}
+                    </p>
+                  ) : (
+                    <div className="grid gap-6 lg:grid-cols-2">
+                      {/* Par membre */}
+                      <div>
+                        <h4 className="mb-3 font-mono text-xs uppercase tracking-wider text-ink-500">
+                          {t.admin.byMember}
+                        </h4>
+                        <div className="space-y-3">
+                          {responsesByMember.map(([member, rows]) => (
+                            <article
+                              key={member}
+                              className="rounded-xl border border-line bg-[#FBFDFF] p-4"
+                            >
+                              <h5 className="font-semibold text-ink-900">{member}</h5>
+                              <dl className="mt-3 space-y-2 text-sm">
+                                {rows.map((r) => (
+                                  <div key={`${member}-${r.module_id}-${r.created_at}`}>
+                                    <dt className="text-xs text-ink-400">
+                                      {moduleTitle(t, r.module_id)}
+                                    </dt>
+                                    <dd className="text-ink-700">{answerLabel(t, r)}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            </article>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Par module */}
+                      <div>
+                        <h4 className="mb-3 font-mono text-xs uppercase tracking-wider text-ink-500">
+                          {t.admin.byModule}
+                        </h4>
+                        <div className="space-y-3">
+                          {MODULES.filter((m) =>
+                            moduleResponses.some((r) => r.module_id === m.id),
+                          ).map((m: ModuleDef) => {
+                            const copy = moduleCopy(t, m.id);
+                            return (
+                              <article
+                                key={m.id}
+                                className="rounded-xl border border-line bg-[#FBFDFF] p-4"
+                              >
+                                <h5 className="text-sm font-semibold text-ink-900">
+                                  {moduleTitle(t, m.id)}
+                                </h5>
+                                {m.type === 'sliders' ? (
+                                  <ul className="mt-3 space-y-1.5 text-sm text-ink-700">
+                                    {Object.entries(
+                                      slidersAverages(
+                                        juryAggregates,
+                                        m.id,
+                                        (m.items ?? []).map((it) => it.key),
+                                      ),
+                                    ).map(([item, avg]) => (
+                                      <li key={item} className="flex justify-between gap-3">
+                                        <span>{(copy?.item?.[item] as string) ?? item}</span>
+                                        <span className="font-mono text-xs text-ink-500">
+                                          {avg != null ? `${avg.toFixed(1)}/10` : t.admin.noValue}
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : m.options && m.options.length ? (
+                                  <ul className="mt-3 space-y-1.5 text-sm text-ink-700">
+                                    {distribution(
+                                      juryAggregates,
+                                      m.id,
+                                      m.options.map((o) => o.key),
+                                    ).map((s) => (
+                                      <li key={s.key} className="flex justify-between gap-3">
+                                        <span>{(copy?.opt?.[s.key] as string) ?? s.key}</span>
+                                        <span className="font-mono text-xs text-ink-500">
+                                          {s.n} · {s.pct}%
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p className="mt-2 text-xs text-ink-400">{t.admin.noValue}</p>
+                                )}
+                              </article>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Réponses ouvertes */}
+                      {openResponses.length > 0 && (
+                        <div className="lg:col-span-2">
+                          <h4 className="mb-3 font-mono text-xs uppercase tracking-wider text-ink-500">
+                            {t.admin.openAnswers}
+                          </h4>
+                          <div className="space-y-3">
+                            {openResponses.map((r) => (
+                              <article
+                                key={`open-${r.respondent}-${r.created_at}`}
+                                className="rounded-xl border border-line bg-[#FBFDFF] p-4"
+                              >
+                                <div className="flex items-start justify-between gap-3">
+                                  <h5 className="font-semibold text-ink-900">
+                                    {r.respondent ?? t.admin.noValue}
+                                  </h5>
+                                  <time className="font-mono text-[0.68rem] text-ink-400">
+                                    {formatSubmittedAt(r.created_at, lang)}
+                                  </time>
+                                </div>
+                                <p className="mt-2 text-sm italic text-ink-700">
+                                  « {r.answer_text} »
+                                </p>
+                              </article>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </section>
               </div>
             )}
           </div>
