@@ -1,0 +1,54 @@
+---
+import type { Lang } from '@/i18n';
+import { useTranslations } from '@/i18n';
+import { SITE } from '@/config/site';
+import { formatDefenseLong, formatDefenseTime } from '@/lib/datetime';
+import AddToCalendar from './AddToCalendar';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const d = SITE.defenseDate;
+const icsTitle = t.jourj.icsTitle;
+---
+
+<section id="soutenance" class="bg-gradient-to-b from-night-900 to-night-800 py-24 sm:py-28 text-white">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <div class="reveal mb-10 max-w-2xl">
+      <p class="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-teal-300">{t.jourj.eyebrow}</p>
+      <h2 class="font-display text-[clamp(2rem,5vw,3.4rem)] font-light leading-[1.05] text-white">{t.jourj.heading}</h2>
+      <p class="mt-5 text-lg leading-relaxed text-slate-300/85">{d ? t.jourj.lead : t.jourj.leadTba}</p>
+    </div>
+
+    {d && (
+      <div class="reveal instrument bg-white/[0.04] p-6 sm:p-9">
+        <dl class="grid gap-6 sm:grid-cols-3">
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-wider text-teal-300/80">{t.jourj.dateLabel}</dt>
+            <dd class="mt-2 font-display text-2xl text-white">{formatDefenseLong(d.startISO, lang)}</dd>
+          </div>
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-wider text-teal-300/80">{t.jourj.timeLabel}</dt>
+            <dd class="mt-2 font-display text-2xl text-white">{formatDefenseTime(d.startISO, d.durationMin, lang)}</dd>
+          </div>
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-wider text-teal-300/80">{t.jourj.roomLabel}</dt>
+            <dd class="mt-2 font-display text-2xl text-white">{d.room}</dd>
+          </div>
+        </dl>
+        <div class="mt-7 border-t border-white/10 pt-6">
+          <p class="text-sm text-slate-300/80">
+            <span class="font-semibold text-white">{t.jourj.accessTitle} — {SITE.venue.name}.</span>
+            {' '}{t.jourj.addressLabel} : {SITE.venue.address}.
+          </p>
+          <p class="mt-2 text-xs text-slate-400/80">{t.jourj.confirmedBy}</p>
+          <div class="mt-5">
+            <AddToCalendar label={t.jourj.addToCalendar} title={icsTitle} client:visible />
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>

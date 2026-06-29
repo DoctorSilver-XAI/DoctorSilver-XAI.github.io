@@ -47,6 +47,16 @@ const t = useTranslations(lang);
       </a>
     </p>
 
+    {SITE.defenseDate && (
+      <p class="mb-8 inline-flex flex-wrap items-center gap-x-3 gap-y-1 self-start rounded-full border border-teal-400/40 bg-teal-400/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-teal-200">
+        <span class="font-semibold text-teal-100">{t.hero.dateConfirmed}</span>
+        <span aria-hidden="true">·</span>
+        <span>{t.hero.dateValue}</span>
+        <span aria-hidden="true">·</span>
+        <span class="text-teal-300/80">{t.hero.dateRoom}</span>
+      </p>
+    )}
+
     <p
       class="mb-6 max-w-2xl text-[clamp(1.05rem,2.4vw,1.4rem)] font-light leading-relaxed text-slate-200/90"
     >
@@ -58,7 +68,7 @@ const t = useTranslations(lang);
     </p>
 
     <div class="flex flex-wrap items-center gap-4">
-      <a href="#disponibilites" class="btn cta-hero text-base">{t.hero.cta}</a>
+      <a href="#soutenance" class="btn cta-hero text-base">{t.hero.cta}</a>
       <span class="font-mono text-xs text-slate-400/80">{t.hero.ctaHint}</span>
     </div>
   </div>
