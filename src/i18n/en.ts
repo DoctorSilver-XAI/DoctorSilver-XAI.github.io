@@ -166,6 +166,13 @@ export const en: Dict = {
     openAnswers: 'Open-ended answers',
     noInsights: 'No insights yet.',
     noValue: '—',
+    cartographie: 'Awareness map',
+    cartographieLead:
+      'Replies grouped by axis, plus the named breakdown of jury members.',
+    byRole: 'By respondent type',
+    byAxis: 'By axis',
+    juryDetail: 'Jury detail (named)',
+    conceptAccuracy: 'Correct matches',
   },
 
   rsvp: {
@@ -213,118 +220,115 @@ export const en: Dict = {
   },
 
   insights: {
-    // Section header
-    eyebrowPublic: 'Test your intuition',
-    eyebrowJury: 'Ahead of the defense',
-    headingPublic: 'AI in mental health: what you (already) know.',
-    headingJury: 'Your perspective matters to me.',
-    introPublic:
-      'A few short questions, with no right or wrong answer, to explore together a pivotal moment: the one where AI is reshaping diagnosis and care in mental health.',
-    introJury:
-      'We are living through a pivotal moment: AI is redrawing diagnosis, monitoring and therapeutic optimisation in neuropsychiatry. These few modules — no grading, no traps — help me calibrate my talk on defense day and prepare the right demonstrations. The pharmacist, as you will see, turns out to be at the heart of tomorrow’s healthcare.',
-    // Journey / navigation
-    actLabel: 'Act',
-    act1: 'Your bearings',
-    act2: 'What AI can already do',
-    act3: 'Explainability, the condition for trust',
-    act4: 'Which medicine, which society — and what role for the pharmacist?',
-    progress: 'Module {n} of {total}',
-    identityLabel: 'You are',
-    identityPlaceholder: 'Select your name',
-    next: 'Next',
-    finish: 'Finish',
-    submit: 'Submit my answer',
+    eyebrow: 'Before the defense',
+    heading: 'Your view on AI in mental health',
+    intro:
+      'A few short questions, with no right or wrong answer, to explore together the notions I will address. You will also discover how the other participants position themselves.',
+    identityTitle: 'Before we begin',
+    identityLead: 'You can stay anonymous, or introduce yourself (optional).',
+    roleAnon: 'Anonymous',
+    roleJury: 'Jury member',
+    roleProche: 'Family or colleague',
+    roleCurieux: 'Curious',
+    jurySelect: 'Choose your name',
+    start: 'Start',
+    progress: 'Step {n} of {total}',
+    axisLangage: 'The language of AI',
+    axisDiagnostic: 'Diagnosis',
+    axisSuivi: 'Personalised monitoring',
+    axisExplicabilite: 'Explainability and trust',
+    validate: 'Validate',
+    next: 'Continue',
     skip: 'Skip',
-    answered: 'Already answered ✓',
-    thanksTitle: 'Thank you!',
-    thanksBody: 'Your answers will help me prepare a defense worthy of you. See you very soon.',
-    revealLabel: 'Takeaway',
+    finish: 'See my summary',
+    noWrong: 'No right or wrong answer',
     youAnswered: 'Your answer',
-    distributionLabel: 'How others answered',
-    noData: 'Be the first to answer.',
-    demoNotice: 'Demo mode: your answers are not saved here.',
-    sliderLeft: 'Substitution',
-    sliderRight: 'Augmentation',
+    collective: 'All respondents',
+    evidence: 'Studies analysed',
+    firstContributor: 'You are among the first to contribute.',
+    sharedCount: '{n} views already shared',
+    joinMajority: 'Your answer matches that of the majority.',
+    standOut: 'Your answer stands out from the rest.',
+    revealMore: 'to explore further during the defense',
     familiarityLow: 'Not at all',
     familiarityHigh: 'Very comfortable',
-    privacyJury:
-      'Your answers are named but private: they are used only to prepare the defense and are never shown publicly.',
-    // Modules — one object per module, keys aligned with src/config/modules.ts
+    synthesisTitle: 'Your journey at a glance',
+    synthesisFamiliarity: 'Your declared comfort with AI notions',
+    synthesisInvite: 'I look forward to discussing it on the day of the defense.',
+    privacy:
+      'Your answers are used only to prepare the defense. Only aggregated counts are shown, never a name.',
+    demoNotice: 'Demo mode, your answers are not saved here.',
     modules: {
-      'interet-global': {
-        q: 'What interests you most in this work?',
-        opt: {
-          'methodes-xai': 'AI methods and their explainability',
-          clinique: 'Concrete clinical applications',
-          paradigme: 'The paradigm shift (early screening, prevention, personalisation)',
-          'ethique-societe': 'Ethical and societal stakes',
-          pharmacien: 'The role of the pharmacist',
-          'medico-eco': 'The medico-economic impact',
+      'situer-ia': {
+        q: 'Here are five examples. In your view, which ones are artificial intelligence, and from which family?',
+        items: {
+          logigramme: 'A decision tree written by hand (if this symptom, then this test)',
+          assistant: 'A conversational assistant like the ones for the general public',
+          foret: 'A random forest that combines hundreds of trees',
+          'cnn-irm': 'A neural network that analyses a brain image',
+          calculatrice: 'A pocket calculator',
         },
-        reveal: 'This cue helps me prioritise my speaking time on defense day.',
+        categories: {
+          regles: 'Rules written by humans',
+          apprentissage: 'Learning from examples',
+          profond: 'Deep learning (neural networks)',
+          'hors-ia': 'Not artificial intelligence',
+        },
+        reveal:
+          'You can picture AI as nested dolls, from written rules to neural networks. Many approaches coexist, and not all are equal depending on the data.',
       },
-      'familiarite-ia': {
-        q: 'How familiar are these concepts to you?',
-        item: {
-          ml: 'Machine Learning',
+      familiarite: {
+        q: 'How familiar are these notions to you?',
+        items: {
+          ml: 'Machine learning',
           reseaux: 'Neural networks',
-          shap: 'SHAP / LIME (explainability)',
-          nlp: 'NLP (language analysis)',
-          pgx: 'Pharmacogenomics',
+          explicabilite: 'Model explainability',
+          langage: 'Automatic language analysis',
         },
-        reveal: 'Thank you: I will calibrate my level of explanation accordingly.',
+        reveal: 'Thank you, this helps me calibrate my level of explanation.',
       },
-      'pepite-arn': {
-        q: 'A simple blood panel (RNA editing) distinguishes bipolar disorder from unipolar depression. With what performance (AUC), in your view?',
-        opt: { a: '≈ 0.55 (barely better than chance)', b: '≈ 0.70', c: '> 0.90', d: '= 1.0 (perfect)' },
+      'delai-diagnostic': {
+        q: 'Bipolar disorder most often begins with a depressive episode, which can delay its identification. In your view, how many years pass on average before the right diagnosis?',
+        unit: 'years',
         reveal:
-          'AUC > 0.90 (Salvetat) — we “read the brain in the blood” via circulating cells. Close to a companion test, where imaging plateaus.',
+          'The studies analysed place this delay at around nine years. This gap is mostly due to the disorder first revealing itself through depression.',
       },
-      'promesse-bipolaire': {
-        q: 'Today, how many years pass on average between the first episode and the diagnosis of bipolar disorder?',
-        opt: { a: '≈ 2 years', b: '≈ 5 years', c: '≈ 9 years', d: '≈ 15 years' },
+      'diagnostic-differentiel': {
+        q: 'Among people eventually diagnosed as bipolar, what share had first been taken for a simple depression?',
+        unit: '%',
         reveal:
-          '≈ 9 years (Keramatian). It is precisely this wandering that AI-assisted early screening could shorten.',
+          'A large share, on the order of half, according to the work analysed. The stakes are real, an antidepressant alone can worsen an unrecognised bipolar disorder.',
       },
-      'pepite-polypharmacie': {
-        q: 'True or false: adding an antipsychotic to a mood stabiliser always reduces mortality in bipolar disorder.',
-        opt: { vrai: 'True', faux: 'False' },
+      intensification: {
+        q: 'Adding medications to a treatment always improves the monitoring of bipolar disorder.',
+        poleLeft: 'Strongly disagree',
+        poleRight: 'Strongly agree',
         reveal:
-          'False: in patients at low vital risk, this combination increases mortality (HR 1.50, Lieslehto). Polypharmacy is only beneficial when targeted.',
+          'The benefit depends on the level of risk. In some patients, intensifying can harm rather than help. The right dosage matters more than the quantity.',
       },
-      'xai-verrou': {
-        q: 'In your view, what most holds back the clinical adoption of AI?',
-        opt: { performance: 'Insufficient performance', explicabilite: 'The lack of explainability and trust', cout: 'Cost', reglementation: 'Regulation' },
+      'role-pharmacien': {
+        q: 'Where will the pharmacist, in your view, be most decisive for an AI in mental health that serves people?',
+        options: {
+          officine: 'In the community pharmacy, closest to the patient',
+          biologie: 'In medical biology, to interpret the analyses',
+          recherche: 'In research and the pharmaceutical industry',
+          qualite: 'In oversight and quality assurance',
+        },
         reveal:
-          'The thesis argues that explainability is the main bottleneck (hypothesis H3): more than raw performance, it is what conditions trust and use.',
+          'They are present at all these links. That is what makes them a key actor in tomorrow’s health.',
       },
-      'pepite-auc': {
-        q: 'True or false: a model can show an excellent AUC while being almost unable to detect actual patients.',
-        opt: { vrai: 'True', faux: 'False' },
+      'performance-fiabilite': {
+        q: 'An artificial intelligence may look very strong on an overall score. In your view, what share of actual patients can such a tool still miss?',
+        unit: '%',
         reveal:
-          'True: sensitivity ≈ 1.7% despite a decent AUC (Huynh). “Never read an AUC alone” — hence the demand for rigour and explainability.',
+          'Far more than one imagines, sometimes nearly all of them, despite a flattering score. A good overall score does not guarantee reliability.',
       },
-      'opinion-aug-sub': {
-        q: 'For you, AI in neuropsychiatry is mainly about…',
+      'boite-noire': {
+        q: 'An artificial intelligence must be able to explain its decisions to be used at the patient’s bedside.',
+        poleLeft: 'Strongly disagree',
+        poleRight: 'Strongly agree',
         reveal:
-          'The thesis firmly defends the augmentation of the clinician (and the patient), never substitution.',
-      },
-      'enjeux-humain': {
-        q: 'The greatest societal risk of poorly governed AI in mental health?',
-        opt: { attention: 'The commodification of attention', autonomie: 'The loss of autonomy and free will', inegalites: 'The widening of inequalities in access', deshumanisation: 'The dehumanisation of care', surveillance: 'Data surveillance' },
-        reveal:
-          'There is no wrong answer: these risks are linked. The challenge is to place mental well-being — and not the mere capture of attention — at the centre of innovation.',
-      },
-      'pharmacien-pivot': {
-        q: 'In which link will the pharmacist be most decisive for an AI in mental health that serves people?',
-        opt: { officine: 'In the community pharmacy (first recourse, detection and support)', biologie: 'In medical biology (co-interpretation of biomarkers)', 'rd-industrie': 'In R&D and industry (augmented drugs and devices)', 'reglementation-qualite': 'In regulation and quality assurance (AI Act, CE/FDA)' },
-        reveal:
-          'The thesis shows it: the pharmacist is present at all these links. That is what makes them the essential actor and guarantor of tomorrow’s augmented health.',
-      },
-      'attente-vision': {
-        q: 'In one sentence: under what condition will AI keep its promises in mental health without betraying the human?',
-        placeholder: 'Your intuition, in a few words…',
-        reveal: 'Thank you — your wording will feed directly into my conclusion.',
+          'It is a condition often deemed essential, explainability feeds the trust and the safety of the decision.',
       },
     },
   },

@@ -50,3 +50,58 @@ export function slidersAverages(
   }
   return out;
 }
+
+export interface HistogramBin { start: number; end: number; n: number }
+
+export function totalForModule(counts: ModuleAnswerCount[], moduleId: string): number {
+  return counts.filter((c) => c.module_id === moduleId).reduce((s, c) => s + c.n, 0);
+}
+
+export function histogram(
+  counts: ModuleAnswerCount[],
+  moduleId: string,
+  opts: { min: number; max: number; binSize: number },
+): HistogramBin[] {
+  const rows = counts.filter((c) => c.module_id === moduleId);
+  const bins: HistogramBin[] = [];
+  for (let start = opts.min; start < opts.max; start += opts.binSize) {
+    bins.push({ start, end: start + opts.binSize, n: 0 });
+  }
+  for (const r of rows) {
+    const v = Number(r.answer_key);
+    if (Number.isNaN(v)) continue;
+    const idx = Math.min(bins.length - 1, Math.floor((v - opts.min) / opts.binSize));
+    if (idx >= 0) bins[idx].n += r.n;
+  }
+  return bins;
+}
+
+export function majorityBin(bins: HistogramBin[]): HistogramBin | null {
+  let best: HistogramBin | null = null;
+  for (const b of bins) {
+    if (b.n > 0 && (!best || b.n > best.n)) best = b;
+  }
+  return best;
+}
+
+export function familiarityAverages(
+  counts: ModuleAnswerCount[],
+  moduleId: string,
+  itemKeys: string[],
+): Record<string, number | null> {
+  const rows = counts.filter((c) => c.module_id === moduleId);
+  const out: Record<string, number | null> = {};
+  for (const item of itemKeys) {
+    let weighted = 0;
+    let count = 0;
+    for (const r of rows) {
+      if (!r.answer_key.startsWith(`${item}:`)) continue;
+      const v = Number(r.answer_key.slice(item.length + 1));
+      if (Number.isNaN(v)) continue;
+      weighted += v * r.n;
+      count += r.n;
+    }
+    out[item] = count > 0 ? weighted / count : null;
+  }
+  return out;
+}
