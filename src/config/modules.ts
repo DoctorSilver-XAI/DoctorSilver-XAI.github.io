@@ -1,54 +1,66 @@
-export type ModuleType = 'single' | 'multi' | 'truefalse' | 'estimate' | 'slider' | 'sliders' | 'open';
+export type ModuleType = 'estimation' | 'concept-map' | 'positioning' | 'familiarity' | 'single';
+export type Axis = 'langage' | 'diagnostic' | 'suivi' | 'explicabilite';
+
 export interface ModuleOption { key: string }
-export interface ModuleSliderItem { key: string }
+export interface EstimationCfg { min: number; max: number; step: number; reference: number }
+export interface ConceptMapCfg { items: { key: string }[]; categories: { key: string }[]; mapping: Record<string, string> }
+export interface FamiliarityCfg { items: { key: string }[]; scale: number }
+
 export interface ModuleDef {
   id: string;
+  axis: Axis;
   type: ModuleType;
-  act: 1 | 2 | 3 | 4;
-  onHome: boolean;
-  optional?: boolean;
   options?: ModuleOption[];
-  items?: ModuleSliderItem[];
-  correctKey?: string;
-  sliderMax?: number;
+  estimation?: EstimationCfg;
+  conceptMap?: ConceptMapCfg;
+  familiarity?: FamiliarityCfg;
 }
+
+export const COLD_START_THRESHOLD = 8;
 
 export const MODULES: ModuleDef[] = [
-  // Acte 1 — Vos repères
-  { id: 'interet-global', type: 'multi', act: 1, onHome: false,
-    options: [{ key: 'methodes-xai' }, { key: 'clinique' }, { key: 'paradigme' }, { key: 'ethique-societe' }, { key: 'pharmacien' }, { key: 'medico-eco' }] },
-  { id: 'familiarite-ia', type: 'sliders', act: 1, onHome: false,
-    items: [{ key: 'ml' }, { key: 'reseaux' }, { key: 'shap' }, { key: 'nlp' }, { key: 'pgx' }] },
-  // Acte 2 — Ce que l'IA sait déjà faire
-  { id: 'pepite-arn', type: 'estimate', act: 2, onHome: true, correctKey: 'c',
-    options: [{ key: 'a' }, { key: 'b' }, { key: 'c' }, { key: 'd' }] },
-  { id: 'promesse-bipolaire', type: 'estimate', act: 2, onHome: false, correctKey: 'c',
-    options: [{ key: 'a' }, { key: 'b' }, { key: 'c' }, { key: 'd' }] },
-  { id: 'pepite-polypharmacie', type: 'truefalse', act: 2, onHome: false, correctKey: 'faux',
-    options: [{ key: 'vrai' }, { key: 'faux' }] },
-  // Acte 3 — L'explicabilité, condition de la confiance
-  { id: 'xai-verrou', type: 'single', act: 3, onHome: true,
-    options: [{ key: 'performance' }, { key: 'explicabilite' }, { key: 'cout' }, { key: 'reglementation' }] },
-  { id: 'pepite-auc', type: 'truefalse', act: 3, onHome: false, correctKey: 'vrai',
-    options: [{ key: 'vrai' }, { key: 'faux' }] },
-  // Acte 4 — Quelle médecine, quelle société — et quel rôle pour le pharmacien
-  { id: 'opinion-aug-sub', type: 'slider', act: 4, onHome: false, sliderMax: 100 },
-  { id: 'enjeux-humain', type: 'single', act: 4, onHome: true,
-    options: [{ key: 'attention' }, { key: 'autonomie' }, { key: 'inegalites' }, { key: 'deshumanisation' }, { key: 'surveillance' }] },
-  { id: 'pharmacien-pivot', type: 'single', act: 4, onHome: true,
-    options: [{ key: 'officine' }, { key: 'biologie' }, { key: 'rd-industrie' }, { key: 'reglementation-qualite' }] },
-  { id: 'attente-vision', type: 'open', act: 4, onHome: false, optional: true },
+  {
+    id: 'situer-ia', axis: 'langage', type: 'concept-map',
+    conceptMap: {
+      items: [{ key: 'logigramme' }, { key: 'assistant' }, { key: 'foret' }, { key: 'cnn-irm' }, { key: 'calculatrice' }],
+      categories: [{ key: 'regles' }, { key: 'apprentissage' }, { key: 'profond' }, { key: 'hors-ia' }],
+      mapping: { logigramme: 'regles', assistant: 'profond', foret: 'apprentissage', 'cnn-irm': 'profond', calculatrice: 'hors-ia' },
+    },
+  },
+  {
+    id: 'familiarite', axis: 'langage', type: 'familiarity',
+    familiarity: { items: [{ key: 'ml' }, { key: 'reseaux' }, { key: 'explicabilite' }, { key: 'langage' }], scale: 5 },
+  },
+  {
+    id: 'delai-diagnostic', axis: 'diagnostic', type: 'estimation',
+    estimation: { min: 0, max: 20, step: 1, reference: 9 },
+  },
+  {
+    id: 'diagnostic-differentiel', axis: 'diagnostic', type: 'estimation',
+    estimation: { min: 0, max: 100, step: 5, reference: 60 },
+  },
+  {
+    id: 'intensification', axis: 'suivi', type: 'positioning',
+  },
+  {
+    id: 'role-pharmacien', axis: 'suivi', type: 'single',
+    options: [{ key: 'officine' }, { key: 'biologie' }, { key: 'recherche' }, { key: 'qualite' }],
+  },
+  {
+    id: 'performance-fiabilite', axis: 'explicabilite', type: 'estimation',
+    estimation: { min: 0, max: 100, step: 5, reference: 98 },
+  },
+  {
+    id: 'boite-noire', axis: 'explicabilite', type: 'positioning',
+  },
 ];
 
-export function juryModules(): ModuleDef[] {
-  return [...MODULES].sort((a, b) => a.act - b.act);
-}
-export function homeModules(): ModuleDef[] {
-  return MODULES.filter((m) => m.onHome);
-}
 export function moduleById(id: string): ModuleDef | undefined {
   return MODULES.find((m) => m.id === id);
 }
 export function allModuleIds(): string[] {
   return MODULES.map((m) => m.id);
+}
+export function modulesByAxis(axis: Axis): ModuleDef[] {
+  return MODULES.filter((m) => m.axis === axis);
 }

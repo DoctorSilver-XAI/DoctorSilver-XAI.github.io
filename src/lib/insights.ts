@@ -3,13 +3,14 @@ import type { ModuleAnswerCount } from './insightsAggregation';
 
 export interface ModuleResponseInput {
   moduleId: string;
-  context: 'public' | 'jury';
+  role?: 'jury' | 'proche' | 'curieux' | null;
   respondent?: string | null;
   answerKeys: string[];
   answerText?: string | null;
 }
 export interface AdminModuleResponse {
   respondent: string | null;
+  role: string | null;
   module_id: string;
   answer_keys: string[];
   answer_text: string | null;
@@ -44,7 +45,8 @@ export async function submitModuleResponse(input: ModuleResponseInput): Promise<
   if (!supabase) throw new Error('Supabase non configuré');
   const { error } = await supabase.from('module_responses').insert({
     module_id: input.moduleId,
-    context: input.context,
+    context: 'public',
+    role: input.role ?? null,
     respondent: input.respondent ?? null,
     answer_keys: input.answerKeys,
     answer_text: input.answerText ?? null,
@@ -52,11 +54,11 @@ export async function submitModuleResponse(input: ModuleResponseInput): Promise<
   if (error) throw error;
 }
 
-export async function hasJuryAnsweredModule(nom: string, moduleId: string): Promise<boolean> {
-  if (!supabase) return false;
-  const { data, error } = await supabase.rpc('jury_answered_module', { p_nom: nom, p_module_id: moduleId });
-  if (error) throw error;
-  return Boolean(data);
+// Conservée inerte. Le flux unifié n'interroge plus la base par nom (anti
+// deanonymisation, RPC jury_answered_module retirée par la migration 0006).
+// Les paramètres sont ignorés volontairement.
+export async function hasJuryAnsweredModule(_nom: string, _moduleId: string): Promise<boolean> {
+  return false;
 }
 
 export async function fetchAdminModuleResponses(password: string): Promise<AdminModuleResponse[]> {

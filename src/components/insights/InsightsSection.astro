@@ -5,24 +5,20 @@ import InsightModules from './InsightModules';
 
 interface Props {
   lang: Lang;
-  mode: 'public' | 'jury';
 }
-const { lang, mode } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
-const eyebrow = mode === 'jury' ? t.insights.eyebrowJury : t.insights.eyebrowPublic;
-const heading = mode === 'jury' ? t.insights.headingJury : t.insights.headingPublic;
-const intro = mode === 'jury' ? t.insights.introJury : t.insights.introPublic;
 ---
 
 <section id="insights" class="bg-gradient-to-b from-[#EAF0F7] to-paper py-24 sm:py-28">
   <div class="mx-auto max-w-4xl px-5 sm:px-8">
     <div class="reveal mb-10 max-w-2xl">
-      <p class="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-teal-600">{eyebrow}</p>
-      <h2 class="font-display text-[clamp(2rem,5vw,3.4rem)] font-light leading-[1.05] text-ink-900">{heading}</h2>
-      <p class="mt-5 text-lg leading-relaxed text-ink-500">{intro}</p>
+      <p class="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-teal-600">{t.insights.eyebrow}</p>
+      <h2 class="font-display text-[clamp(2rem,5vw,3.4rem)] font-light leading-[1.05] text-ink-900">{t.insights.heading}</h2>
+      <p class="mt-5 text-lg leading-relaxed text-ink-500">{t.insights.intro}</p>
     </div>
     <div class="reveal">
-      <InsightModules lang={lang} mode={mode} t={t.insights} client:visible />
+      <InsightModules lang={lang} t={t.insights} client:visible />
     </div>
   </div>
 </section>

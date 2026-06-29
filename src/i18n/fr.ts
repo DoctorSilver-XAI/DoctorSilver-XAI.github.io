@@ -172,6 +172,13 @@ export const fr = {
     openAnswers: 'Réponses ouvertes',
     noInsights: 'Aucun insight pour le moment.',
     noValue: '—',
+    cartographie: 'Cartographie de la sensibilisation',
+    cartographieLead:
+      'Vue par axe des réponses recueillies, plus le détail nominatif des membres du jury.',
+    byRole: 'Par type de répondant',
+    byAxis: 'Par axe',
+    juryDetail: 'Détail du jury (nominatif)',
+    conceptAccuracy: 'Bonnes associations',
   },
 
   rsvp: {
@@ -219,118 +226,115 @@ export const fr = {
   },
 
   insights: {
-    // En-tête de section
-    eyebrowPublic: 'Testez votre intuition',
-    eyebrowJury: 'En amont de la soutenance',
-    headingPublic: 'L’IA en santé mentale : ce que vous en savez (déjà).',
-    headingJury: 'Votre regard m’intéresse.',
-    introPublic:
-      'Quelques questions courtes, sans bonne ni mauvaise réponse, pour explorer ensemble une période charnière : celle où l’IA reconfigure le diagnostic et le soin en santé mentale.',
-    introJury:
-      'Nous vivons un moment charnière : l’IA redessine le diagnostic, le suivi et l’optimisation thérapeutique en neuropsychiatrie. Ces quelques modules — sans note ni piège — m’aident à calibrer mon propos le jour J et à préparer les bonnes démonstrations. Le pharmacien, vous le verrez, s’y révèle au cœur de la santé de demain.',
-    // Parcours / navigation
-    actLabel: 'Acte',
-    act1: 'Vos repères',
-    act2: 'Ce que l’IA sait déjà faire',
-    act3: 'L’explicabilité, condition de la confiance',
-    act4: 'Quelle médecine, quelle société — et quel rôle pour le pharmacien ?',
-    progress: 'Module {n} sur {total}',
-    identityLabel: 'Vous êtes',
-    identityPlaceholder: 'Sélectionnez votre nom',
-    next: 'Suivant',
-    finish: 'Terminer',
-    submit: 'Valider ma réponse',
+    eyebrow: 'Avant la soutenance',
+    heading: 'Votre regard sur l’IA en santé mentale',
+    intro:
+      'Quelques questions courtes, sans bonne ni mauvaise réponse, pour explorer ensemble les notions que j’aborderai. Vous découvrirez aussi comment se positionnent les autres participants.',
+    identityTitle: 'Avant de commencer',
+    identityLead: 'Vous pouvez rester anonyme, ou vous présenter (facultatif).',
+    roleAnon: 'Anonyme',
+    roleJury: 'Membre du jury',
+    roleProche: 'Proche ou collègue',
+    roleCurieux: 'Curieux',
+    jurySelect: 'Choisissez votre nom',
+    start: 'Commencer',
+    progress: 'Étape {n} sur {total}',
+    axisLangage: 'Le langage de l’IA',
+    axisDiagnostic: 'Le diagnostic',
+    axisSuivi: 'Le suivi personnalisé',
+    axisExplicabilite: 'L’explicabilité et la confiance',
+    validate: 'Valider',
+    next: 'Continuer',
     skip: 'Passer',
-    answered: 'Déjà répondu ✓',
-    thanksTitle: 'Merci !',
-    thanksBody: 'Vos réponses m’aideront à préparer une soutenance à votre hauteur. À très bientôt.',
-    revealLabel: 'À retenir',
+    finish: 'Voir ma synthèse',
+    noWrong: 'Sans bonne ni mauvaise réponse',
     youAnswered: 'Votre réponse',
-    distributionLabel: 'Les autres ont répondu',
-    noData: 'Soyez le premier à répondre.',
-    demoNotice: 'Mode démonstration : vos réponses ne sont pas enregistrées ici.',
-    sliderLeft: 'Substitution',
-    sliderRight: 'Augmentation',
+    collective: 'L’ensemble des répondants',
+    evidence: 'Études analysées',
+    firstContributor: 'Vous êtes parmi les premiers à contribuer.',
+    sharedCount: '{n} regards déjà partagés',
+    joinMajority: 'Votre réponse rejoint celle de la majorité.',
+    standOut: 'Votre réponse se distingue de l’ensemble.',
+    revealMore: 'à approfondir lors de la soutenance',
     familiarityLow: 'Pas du tout',
     familiarityHigh: 'Très à l’aise',
-    privacyJury:
-      'Vos réponses sont nominatives mais privées : elles ne servent qu’à préparer la soutenance et ne sont jamais affichées publiquement.',
-    // Modules — un objet par module, clés alignées sur src/config/modules.ts
+    synthesisTitle: 'Votre parcours en un coup d’œil',
+    synthesisFamiliarity: 'Votre aisance déclarée avec les notions d’IA',
+    synthesisInvite: 'Au plaisir d’en discuter le jour de la soutenance.',
+    privacy:
+      'Vos réponses servent uniquement à préparer la soutenance. Seuls des comptes agrégés sont affichés, jamais un nom.',
+    demoNotice: 'Mode démonstration, vos réponses ne sont pas enregistrées ici.',
     modules: {
-      'interet-global': {
-        q: 'Ce qui vous intéresse le plus dans ce travail ?',
-        opt: {
-          'methodes-xai': 'Les méthodes d’IA et leur explicabilité',
-          clinique: 'Les applications cliniques concrètes',
-          paradigme: 'Le changement de paradigme (dépistage précoce, prévention, personnalisation)',
-          'ethique-societe': 'Les enjeux éthiques et de société',
-          pharmacien: 'Le rôle du pharmacien',
-          'medico-eco': 'L’impact médico-économique',
+      'situer-ia': {
+        q: 'Voici cinq exemples. Selon vous, lesquels relèvent de l’intelligence artificielle, et de quelle famille ?',
+        items: {
+          logigramme: 'Un arbre de décision écrit à la main (si tel symptôme, alors tel test)',
+          assistant: 'Un assistant conversationnel comme ceux du grand public',
+          foret: 'Une forêt aléatoire qui combine des centaines d’arbres',
+          'cnn-irm': 'Un réseau de neurones qui analyse une image cérébrale',
+          calculatrice: 'Une calculatrice de poche',
         },
-        reveal: 'Ce repère m’aide à hiérarchiser mon temps de parole le jour J.',
+        categories: {
+          regles: 'Règles écrites par l’humain',
+          apprentissage: 'Apprentissage à partir d’exemples',
+          profond: 'Apprentissage profond (réseaux de neurones)',
+          'hors-ia': 'Hors intelligence artificielle',
+        },
+        reveal:
+          'On peut se représenter l’IA comme des poupées russes, des règles écrites jusqu’aux réseaux de neurones. Beaucoup d’approches coexistent, et toutes ne se valent pas selon la donnée.',
       },
-      'familiarite-ia': {
+      familiarite: {
         q: 'À quel point ces notions vous sont-elles familières ?',
-        item: {
-          ml: 'Machine Learning',
+        items: {
+          ml: 'Apprentissage automatique',
           reseaux: 'Réseaux de neurones',
-          shap: 'SHAP / LIME (explicabilité)',
-          nlp: 'NLP (analyse du langage)',
-          pgx: 'Pharmacogénomique',
+          explicabilite: 'Explicabilité des modèles',
+          langage: 'Analyse automatique du langage',
         },
-        reveal: 'Merci : je calibrerai mon niveau d’explication en conséquence.',
+        reveal: 'Merci, cela m’aide à calibrer mon niveau d’explication.',
       },
-      'pepite-arn': {
-        q: 'Un simple panel sanguin (édition de l’ARN) distingue le trouble bipolaire d’une dépression unipolaire. Selon vous, avec quelle performance (AUC) ?',
-        opt: { a: '≈ 0,55 (à peine mieux que le hasard)', b: '≈ 0,70', c: '> 0,90', d: '= 1,0 (parfait)' },
+      'delai-diagnostic': {
+        q: 'Le trouble bipolaire débute le plus souvent par un épisode dépressif, ce qui peut retarder son identification. Selon vous, combien d’années s’écoulent en moyenne avant le bon diagnostic ?',
+        unit: 'ans',
         reveal:
-          'AUC > 0,90 (Salvetat) — on « lit le cerveau dans le sang » via des cellules circulantes. Proche d’un test compagnon, là où l’imagerie plafonne.',
+          'Les études analysées situent ce délai autour de neuf ans. Ce décalage tient surtout à ce que le trouble se révèle d’abord par la dépression.',
       },
-      'promesse-bipolaire': {
-        q: 'Aujourd’hui, combien d’années s’écoulent en moyenne entre le 1er épisode et le diagnostic de trouble bipolaire ?',
-        opt: { a: '≈ 2 ans', b: '≈ 5 ans', c: '≈ 9 ans', d: '≈ 15 ans' },
+      'diagnostic-differentiel': {
+        q: 'Parmi les personnes finalement diagnostiquées bipolaires, quelle part avait d’abord été prise pour une dépression simple ?',
+        unit: '%',
         reveal:
-          '≈ 9 ans (Keramatian). C’est précisément cette errance que le dépistage précoce assisté par IA pourrait raccourcir.',
+          'Une part importante, de l’ordre de la moitié, selon les travaux analysés. L’enjeu est réel, un antidépresseur seul peut aggraver un trouble bipolaire méconnu.',
       },
-      'pepite-polypharmacie': {
-        q: 'Vrai ou faux : ajouter un antipsychotique à un thymorégulateur réduit toujours la mortalité dans le trouble bipolaire.',
-        opt: { vrai: 'Vrai', faux: 'Faux' },
+      intensification: {
+        q: 'Ajouter des médicaments à un traitement améliore toujours le suivi d’un trouble bipolaire.',
+        poleLeft: 'Pas du tout d’accord',
+        poleRight: 'Tout à fait d’accord',
         reveal:
-          'Faux : chez les patients à faible risque vital, cette association augmente la mortalité (HR 1,50, Lieslehto). La polypharmacie n’est bénéfique que ciblée.',
+          'Le bénéfice dépend du niveau de risque. Chez certains patients, intensifier peut nuire plutôt qu’aider. Le bon dosage prime sur la quantité.',
       },
-      'xai-verrou': {
-        q: 'Selon vous, qu’est-ce qui freine le plus l’adoption clinique de l’IA ?',
-        opt: { performance: 'Une performance insuffisante', explicabilite: 'Le manque d’explicabilité et de confiance', cout: 'Le coût', reglementation: 'La réglementation' },
+      'role-pharmacien': {
+        q: 'Où le pharmacien sera-t-il, selon vous, le plus décisif pour une IA en santé mentale au service de l’humain ?',
+        options: {
+          officine: 'À l’officine, au plus près du patient',
+          biologie: 'En biologie médicale, pour interpréter les analyses',
+          recherche: 'En recherche et dans l’industrie du médicament',
+          qualite: 'Dans l’encadrement et l’assurance qualité',
+        },
         reveal:
-          'La thèse défend l’explicabilité comme verrou principal (hypothèse H3) : c’est elle, plus que la performance brute, qui conditionne la confiance et l’usage.',
+          'Il est présent à tous ces maillons. C’est ce qui en fait un acteur clé de la santé de demain.',
       },
-      'pepite-auc': {
-        q: 'Vrai ou faux : un modèle peut afficher une excellente AUC tout en étant presque incapable de détecter les vrais malades.',
-        opt: { vrai: 'Vrai', faux: 'Faux' },
+      'performance-fiabilite': {
+        q: 'Une intelligence artificielle peut sembler très performante sur un score global. Selon vous, quelle part des vrais malades un tel outil peut-il malgré tout manquer ?',
+        unit: '%',
         reveal:
-          'Vrai : sensibilité ≈ 1,7 % malgré une AUC correcte (Huynh). « Ne jamais lire une AUC seule » — d’où l’exigence de rigueur et d’explicabilité.',
+          'Bien plus qu’on ne l’imagine, parfois la quasi-totalité, malgré un score flatteur. Un bon score global ne garantit pas la fiabilité.',
       },
-      'opinion-aug-sub': {
-        q: 'Pour vous, l’IA en neuropsychiatrie relève surtout de…',
+      'boite-noire': {
+        q: 'Une intelligence artificielle doit pouvoir expliquer ses décisions pour être utilisée au lit du patient.',
+        poleLeft: 'Pas du tout d’accord',
+        poleRight: 'Tout à fait d’accord',
         reveal:
-          'La thèse défend fermement l’augmentation du clinicien (et du patient), jamais la substitution.',
-      },
-      'enjeux-humain': {
-        q: 'Le plus grand risque sociétal d’une IA mal encadrée en santé mentale ?',
-        opt: { attention: 'La marchandisation de l’attention', autonomie: 'La perte d’autonomie et de libre arbitre', inegalites: 'Le creusement des inégalités d’accès', deshumanisation: 'La déshumanisation du soin', surveillance: 'La surveillance des données' },
-        reveal:
-          'Il n’y a pas de mauvaise réponse : ces risques sont liés. L’enjeu est de placer le bien-être mental — et non la seule captation de l’attention — au centre de l’innovation.',
-      },
-      'pharmacien-pivot': {
-        q: 'Dans quel maillon le pharmacien sera-t-il le plus décisif pour une IA en santé mentale au service de l’humain ?',
-        opt: { officine: 'À l’officine (1er recours, repérage et accompagnement)', biologie: 'En biologie médicale (co-interprétation des biomarqueurs)', 'rd-industrie': 'En R&D et industrie (médicaments et dispositifs augmentés)', 'reglementation-qualite': 'Dans la réglementation et l’assurance qualité (AI Act, CE/FDA)' },
-        reveal:
-          'La thèse le montre : le pharmacien est présent à tous ces maillons. C’est ce qui en fait l’acteur, le garant incontournable de la santé augmentée de demain.',
-      },
-      'attente-vision': {
-        q: 'En une phrase : à quelle condition l’IA tiendra-t-elle ses promesses en santé mentale sans trahir l’humain ?',
-        placeholder: 'Votre intuition, en quelques mots…',
-        reveal: 'Merci — votre formulation nourrira directement ma conclusion.',
+          'C’est une condition souvent jugée essentielle, l’explicabilité nourrit la confiance et la sécurité de la décision.',
       },
     },
   },

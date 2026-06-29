@@ -1,18 +1,15 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Jury from '@/components/pages/Jury.astro';
-import { useTranslations } from '@/i18n';
-
-const lang = 'fr' as const;
-const t = useTranslations(lang);
+// La page /jury redirige instantanément vers l'accueil (section unifiée).
 ---
-
-<BaseLayout
-  title={t.meta.juryTitle}
-  description={t.meta.juryDescription}
-  lang={lang}
-  path="/jury"
-  noindex
->
-  <Jury lang={lang} path="/jury" />
-</BaseLayout>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=/" />
+    <link rel="canonical" href="/" />
+    <meta name="robots" content="noindex" />
+    <title>Redirection vers l'accueil</title>
+    <script is:inline>location.replace('/');</script>
+  </head>
+  <body></body>
+</html>
