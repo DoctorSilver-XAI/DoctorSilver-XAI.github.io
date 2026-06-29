@@ -56,7 +56,10 @@ create policy "anon_insert_module_responses"
   );
 
 -- RPC admin, lecture nominative jury, ajout du role.
-create or replace function public.admin_module_responses(p_password text)
+-- DROP prealable obligatoire : la signature de retour change (colonne role ajoutee),
+-- et create or replace ne peut pas modifier le type de retour d une fonction existante.
+drop function if exists public.admin_module_responses(text);
+create function public.admin_module_responses(p_password text)
 returns table (
   respondent  text,
   role        text,
